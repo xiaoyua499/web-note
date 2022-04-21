@@ -29,11 +29,7 @@
 
 4. **服务器在外提供了那些资源**
 
-   1. 在网站中请求服务器的数据资源,则需要用到 **XML HttpRequerst** 对象
-
-   2. **XML HttpRequerst** (简称 xhr) 是浏览器提供的js成员, 通过他, 可以请求服务器上的数据资源
-
-      `var xhrObj = new XML HttpRequerst()`
+   1. 在网站中请求服务器的数据资源,则需要用到 **XML HttpRequerst** 对象`
 
    3. 资源的请求方式
 
@@ -292,5 +288,166 @@
    </body>
    ```
 
-   
+4. **art-template标准语法**
+
+   1. art-template 提供了 **{{ }}** 这种语法格式，在 {{ }} 内可以进行**变量输出**，或**循环数组**等操作，这种 {{ }} 语法在 art-template 中被称为标准语法。
+
+   2. **输出**
+
+      ```javascript
+      {{value}}
+      {{obj.key}}
+      {{obj['key']}}
+      {{a ? b : c}}
+      {{a || b}}
+      {{a + b}}
+      //在 {{ }} 语法中，可以进行变量的输出、对象属性的输出、三元表达式输出、逻辑或输出、加减乘除等表达式输出。
+      ```
+
+   3. **原文输出**
+
+      ```javascript
+      {{@ value }}
+      //如果要输出的 value 值中，包含了 HTML 标签结构，则需要使用原文输出语法，才能保证 HTML 标签被正常渲染。 
+      ```
+
+   4. **条件输出**
+
+      ```javascript
+      {{if value}} 按需输出的内容 {{/if}}
+      
+      {{if v1}} 按需输出的内容 {{else if v2}} 按需输出的内容 {{/if}}
+      ```
+
+   5. **循环输出**
+
+      ```javascript
+      //如果要实现循环输出，则可以在 {{ }} 内，通过 each 语法循环数组，当前循环的索引使用 $index 进行访问，当前的循环项使用 $value 进行访问。
+      {{each arr}}
+          {{$index}} {{$value}}
+      {{/each}}
+      ```
+
+   6. **过滤器**
+
+      ```javascript
+      {{value | filterName}}
+      //定义过滤器的基本语法如下：
+      template.defaults.imports.filterName = function(value){/*return处理的结果*/}
+      ```
+
+5. **模板引擎的实现原理**
+
+   1. **正则与字符串操作**
+
+      1. **基本语法**
+
+         exec() 函数用于检索字符串中的正则表达式的匹配。
+
+         如果字符串中有匹配的值，则返回该匹配值，否则返回 null。
+
+         ```javascript
+         RegExpObject.exec(string)
+         示例代码如下：
+         var str = 'hello'
+         var pattern = /o/
+         // 输出的结果["o", index: 4, input: "hello", groups: undefined]
+         console.log(pattern.exec(str)) 
+         ```
+
+      2. **分组**
+
+         ```javascript
+         //正则表达式中 ( ) 包起来的内容表示一个分组，可以通过分组来提取自己想要的内容，示例代码如下：
+         var str = '<div>我是{{name}}</div>'
+         var pattern = /{{([a-zA-Z]+)}}/
+         var patternResult = pattern.exec(str)
+         console.log(patternResult)
+         // 得到 name 相关的分组信息
+         // ["{{name}}", "name", index: 7, input: "<div>我是{{name}}</div>", groups: undefined]
+         ```
+
+      3. **字符串的replace函数**
+
+         ```javascript
+         //replace() 函数用于在字符串中用一些字符替换另一些字符，语法格式如下：
+         var result = '123456'.replace('123', 'abc') // 得到的 result 的值为字符串 'abc456'
+         //示例代码如下：
+         var str = '<div>我是{{name}}</div>'
+         var pattern = /{{([a-zA-Z]+)}}/
+         var patternResult = pattern.exec(str)
+         str = str.replace(patternResult[0], patternResult[1]) // replace 函数返回值为替换后的新字符串
+         // 输出的内容是：<div>我是name</div>
+         console.log(str)
+         
+         //使用while循环replace
+         var str = '<div>{{name}}今年{{ age }}岁了</div>'
+         var pattern = /{{\s*([a-zA-Z]+)\s*}}/
+         var patternResult = null
+         while (patternResult = pattern.exec(str)) {
+             str = str.replace(patternResult[0], patternResult[1])
+         }
+         console.log(str)
+         ```
+
+      4. **replace替换为真值**
+
+         ```javascript
+         var data = { name: '张三', age: 20 }
+         var str = '<div>{{name}}今年{{ age }}岁了</div>'
+         var pattern = /{{\s*([a-zA-Z]+)\s*}}/
+         var patternResult = null
+         while ((patternResult = pattern.exec(str))) {
+            str = str.replace(patternResult[0], data[patternResult[1]])
+         }
+         console.log(str)
+         ```
+
+   2. **实现简易的模板引擎**
+
+      ```html
+      <!-- 定义模板结构 -->
+      <script type="text/html" id="tpl-user">
+         <div>姓名：{{name}}</div>
+         <div>年龄：{{ age }}</div>
+         <div>性别：{{  gender}}</div>
+         <div>住址：{{address  }}</div>
+      </script>
+      <!--预调用模板引擎-->
+      <script>
+         // 定义数据
+         var data = { name: 'zs', age: 28, gender: '男', address: '北京顺义马坡' }
+         // 调用模板函数
+         var htmlStr = template('tpl-user', data)
+         // 渲染HTML结构
+         document.getElementById('user-box').innerHTML = htmlStr
+          
+          //封装template函数
+          function template(id, data) {
+            var str = document.getElementById(id).innerHTML
+            var pattern = /{{\s*([a-zA-Z]+)\s*}}/
+            var pattResult = null
+            while ((pattResult = pattern.exec(str))) {
+              str = str.replace(pattResult[0], data[pattResult[1]])
+            }
+            return str
+      	}
+      </script>
+      ```
+
+## Ajax加强
+
+### XMLHttpRequest的基本使用
+
+1. **XML HttpRequerst** (简称 xhr) 是浏览器提供的js成员, 通过他, 可以请求服务器上的数据资源
+
+   `var xhrObj = new XML HttpRequerst()
+
+2. **使用xhr发起GET请求**
+
+   1. 
+
+
+
+
 
