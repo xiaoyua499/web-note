@@ -445,7 +445,215 @@
 
 2. **使用xhr发起GET请求**
 
-   1. 
+   ```javascript
+   // 1. 创建 XHR 对象
+   var xhr = new XMLHttpRequest()
+   // 2. 调用 open 函数，指定 请求方式 与 URL地址
+   xhr.open('GET', 'http://www.liulongbin.top:3006/api/getbooks')
+   // 3. 调用 send 函数，发起 Ajax 请求
+   xhr.send()
+   // 4. 监听 onreadystatechange 事件
+   xhr.onreadystatechange = function() {
+       // 4.1 监听 xhr 对象的请求状态 readyState ；与服务器响应的状态 status
+       if (xhr.readyState === 4 && xhr.status === 200) {
+           // 4.2 打印服务器响应回来的数据
+           console.log(xhr.responseText)
+       }
+   }
+   ```
+
+3. **了解xhr对象的readyState属性**
+
+   1. XMLHttpRequest 对象的 readyState 属性，用来表示**当前** **Ajax** **请求所处的状态**。
+
+      | **值** |     **状态**     | **描述**                                                     |
+      | :----: | :--------------: | :----------------------------------------------------------- |
+      |   0    |      UNSENT      | XMLHttpRequest 对象已被创建，但尚未调用 open方法。           |
+      |   1    |      OPENED      | open() 方法已经被调用。                                      |
+      |   2    | HEADERS_RECEIVED | send() 方法已经被调用，响应头也已经被接收。                  |
+      |   3    |     LOADING      | 数据接收中，此时 response 属性中已经包含部分数据。           |
+      | **4**  |     **DONE**     | **Ajax 请求完成**，这意味着数据传输已经彻底**完成**或**失败**。 |
+
+4. **使用xhr发起带参数的GET请求**
+
+   1. 使用 xhr 对象发起带参数的 GET 请求时，只需在调用 xhr.open 期间，为 URL 地址指定参数即可：
+
+      `xhr.open('GET', 'http://www.liulongbin.top:3006/api/getbooks**?id=1**')`这种在 URL 地址后面拼接的参数，叫做**查询字符串**。
+
+5. **查询字符串**
+
+   1. **什么是查询字符串**
+
+      1. 定义：查询字符串（URL 参数）是指在 URL 的末尾加上用于向服务器发送信息的字符串（变量）。
+
+      2. 格式：将英文的 **?** 放在URL 的末尾，然后再加上 **参数＝值** ，想加上多个参数的话，使用 **&** 符号进行分隔。以这个形式，可以将想要发送给服务器的数据添加到 URL 中。
+
+         ```javascript
+         // 不带参数的 URL 地址
+         http://www.liulongbin.top:3006/api/getbooks
+         // 带一个参数的 URL 地址
+         http://www.liulongbin.top:3006/api/getbooks?id=1
+         // 带两个参数的 URL 地址
+         http://www.liulongbin.top:3006/api/getbooks?id=1&bookname=西游记
+         ```
+
+   2. **GET请求携带参数的本质**
+
+      无论使用 $.ajax()，还是使用 $.get()，又或者直接使用 xhr 对象发起 GET 请求，当需要携带参数的时候，本质上，都是直接将参数以查询字符串的形式，追加到 URL 地址的后面，发送到服务器的。
+
+6. **URL编码与解码**
+
+   1. **什么是URL编码**
+      1. URL 地址中，只允许出现英文相关的字母、标点符号、数字，因此，在 URL 地址中不允许出现中文字符。
+      2. **URL编码的原则**：使用安全的字符（没有特殊用途或者特殊意义的可打印字符(英文字符)）去表示那些不安全的字符(非英文字符)。
+   2. **如何对URL进行编码与解码**
+      1. encodeURI() 编码的函数
+      2. ldecodeURI() 解码的函数
+
+7. **使用xh发起POST请求**
+
+   ```javascript
+   // 1. 创建 xhr 对象
+   var xhr = new XMLHttpRequest()
+   // 2. 调用 open()
+   xhr.open('POST', 'http://www.liulongbin.top:3006/api/addbook')
+   // 3. 设置 Content-Type 属性（固定写法）
+   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+   // 4. 调用 send()，同时将数据以查询字符串的形式，提交给服务器
+   xhr.send('bookname=水浒传&author=施耐庵&publisher=天津图书出版社')
+   // 5. 监听 onreadystatechange 事件
+   xhr.onreadystatechange = function() {
+       if (xhr.readyState === 4 && xhr.status === 200) {
+           console.log(xhr.responseText)
+       }
+   }
+   ```
+
+### 数据交换格式
+
+1. **什么是数据交换格式**
+
+   1. 数据交换格式，就是**服务器端**与**客户端**之间进行**数据传输与交换的格式**
+   2. 前端领域，经常提及的两种数据交换格式分别是 XML 和 **JSON**。其中 XML 用的非常少，所以，我们重点要学习的数据交换格式就是 **JSON**。
+
+2. **XML**
+
+   1. XML 的英文全称是 E**X**tensible **M**arkup **L**anguage，即**可扩展标记语言**。因此，XML 和 HTML 类似，也是一种标记语言。
+   2. **. XML和HTML的区别**
+      1. HTML 被设计用来描述网页上的**内容**，是网页内容的载体
+      2. XML 被设计用来**传输和存储数据**，是数据的载体 
+
+3. **JSON**
+
+   1. **.** **什么是****JSON**
+
+      1. 概念：JSON 的英文全称是 JavaScript Object Notation，即“JavaScript 对象表示法”。简单来讲，JSON 就是 Javascript 对象和数组的字符串表示法，它使用文本表示一个 JS 对象或数组的信息，因此，**JSON** **的本质是字符串**。
+      2. 作用：JSON 是一种轻量级的文本数据交换格式，在作用上类似于 XML，专门用于存储和传输数据，但是 JSON 比 XML 更小、更快、更易解析。
+
+   2. **JSON的两种结构**
+
+      1. JSON 就是用字符串来表示 Javascript 的对象和数组。所以，JSON 中包含**对象**和**数组**两种结构，通过这两种结构的相互嵌套，可以表示各种复杂的数据结构。
+
+      2. **对象结构**：对象结构在 JSON 中表示为 { } 括起来的内容。数据结构为 { key: value, key: value, … } 的键值对结构。其中，key 必须是使用英文的双引号包裹的字符串，value 的数据类型可以是数字、字符串、布尔值、null、数组、对象6种类型。
+
+         ```javascript
+         {
+             "name": "zs",
+             "age": 20,
+             "gender": "男",
+             "address": null,
+             "hobby": ["吃饭", "睡觉", "打豆豆"]
+         }
+         ```
+
+      3. **数组结构**：数组结构在 JSON 中表示为 [ ] 括起来的内容。数据结构为 [ "java", "javascript", 30, true … ] 。数组中数据的类型可以是数字、字符串、布尔值、null、数组、对象6种类型。
+
+         ```javascript
+         [ "java", "python", "php" ]
+         [ 100, 200, 300.5 ]
+         [ true, false, null ]
+         [ { "name": "zs", "age": 20}, { "name": "ls", "age": 30} ]
+         [ [ "苹果", "榴莲", "椰子" ], [ 4, 50, 5 ] ]
+         ```
+
+      4. **JSON语法注意事项**
+
+         1. 属性名必须使用双引号包裹
+         2. 字符串类型的值必须使用双引号包裹
+         3. JSON 中不允许使用单引号表示字符串
+         4. JSON 中不能写注释
+         5. JSON 的最外层必须是对象或数组格式
+         6. 不能使用 undefined 或函数作为 JSON 的值
+
+      5. **JSON和JS对象的关系**
+
+         ```javascript
+         //JSON 是 JS 对象的字符串表示法，它使用文本表示一个 JS 对象的信息，本质是一个字符串。例如：
+         
+         //这是一个对象
+         var obj = {a: 'Hello', b: 'World'}
+         
+         //这是一个 JSON 字符串，本质是一个字符串
+         var json = '{"a": "Hello", "b": "World"}' 
+         ```
+
+      6. **JSON和JS对象的互转**
+
+         ```javascript
+         //从 JSON 字符串转换为 JS 对象，使用 JSON.parse() 方法：
+         var obj = JSON.parse('{"a": "Hello", "b": "World"}')
+         //结果是 {a: 'Hello', b: 'World'}
+         
+         //从 JS 对象转换为 JSON 字符串，使用 JSON.stringify() 方法：
+         var json = JSON.stringify({a: 'Hello', b: 'World'})
+         //结果是 '{"a": "Hello", "b": "World"}'
+         ```
+
+      7. **序列化和反序列化**
+
+         1. 把数据对象转换为字符串的过程，叫做**序列化**，例如：调用 JSON.stringify() 函数的操作，叫做 JSON 序列化。
+         2. 把字符串转换为数据对象的过程，叫做**反序列化**，例如：调用 JSON.parse() 函数的操作，叫做 JSON 反序列化。
+
+### XMLHttpRequest Level2的新特性
+
+1. **XMLHttpRequest Level2的新功能**
+
+   1. 可以设置 HTTP 请求的时限
+
+      ```javascript
+      //有时，Ajax 操作很耗时，而且无法预知要花多少时间。如果网速很慢，用户可能要等很久。新版本的 XMLHttpRequest 对象，增加了 timeout 属性，可以设置 HTTP 请求的时限：
+      xhr.timeout = 3000
+      //上面的语句，将最长等待时间设为 3000 毫秒。过了这个时限，就自动停止HTTP请求。与之配套的还有一个 timeout 事件，用来指定回调函数：
+      xhr.ontimeout = function(event){
+           alert('请求超时！')
+       }
+      ```
+
+      
+
+   2. 可以使用 FormData 对象管理表单数据
+
+      ```JavaScript
+      //Ajax 操作往往用来提交表单数据。为了方便表单处理，HTML5 新增了一个 FormData 对象，可以模拟表单操作：
+      
+      // 1. 新建 FormData 对象
+      var fd = new FormData()
+      // 2. 为 FormData 添加表单项
+      fd.append('uname', 'zs')
+      fd.append('upwd', '123456')
+      // 3. 创建 XHR 对象
+      var xhr = new XMLHttpRequest()
+      // 4. 指定请求类型与URL地址
+      xhr.open('POST', 'http://www.liulongbin.top:3006/api/formdata')
+      // 5. 直接提交 FormData 对象，这与提交网页表单的效果，完全一样
+      xhr.send(fd)
+      ```
+
+      
+
+   3. 可以上传文件
+
+   4. 可以获得数据传输的进度信息
 
 
 
