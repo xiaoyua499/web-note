@@ -857,7 +857,305 @@
          })
          ```
 
+   3. **中间件的作用**
+
+      多个中间件之间，**共享同一份** **req** **和** **res**。基于这样的特性，我们可以在上游的中间件中，**统一**为 req 或 res 对象添加自定义的属性或方法，供下游的中间件或路由进行使用。
+
+   4. **定义多个全局中间件**
+
+      可以使用 app.use() 连续定义多个全局中间件。客户端请求到达服务器之后，会按照中间件定义的先后顺序依次进行调用
+
+   5. **局部生效的中间件**
+
+      1. 不使用 app.use() 定义的中间件，叫做局部生效的中间件，示例代码如下：
+
+      ```javascript
+      // 1. 定义中间件函数
+      const mw1 = (req, res, next) => {
+        console.log('调用了局部生效的中间件')
+        next()
+      }
+      
+      // 2. 创建路由
+      app.get('/', mw1, (req, res) => {
+        res.send('Home page.')
+      })
+      ```
+
+   6. **定义多个局部中间件**
+
+      ```javascript
+      //以下两种写法完全等价
+      app.get('/', [mw1, mw2], (req, res) => {
+        res.send('Home page.')
+      })
+      
+      app.get('/', mw1, mw2, (req, res) => {
+        res.send('Home page.')
+      })
+      ```
+
+      1. **中间件的5个使用注意事项**
+         1. 一定要在路由之前注册中间件
+         2. 客户端发送过来的请求，可以连续调用多个中间件进行处理
+         3. 执行完中间件的业务代码之后，不要忘记调用 next() 函数
+         4. 为了防止代码逻辑混乱，调用 next() 函数后不要再写额外的代码
+         5. 连续调用多个中间件时，多个中间件之间，共享 req 和 res 对象
+
+3. **中间件的分类**
+
+   1. **应用级别的中间件**
+
+      通过 app.use() 或 app.get() 或 app.post() ，绑定到 app 实例上的中间件，叫做应用级别的中间件
+
+   2. **路由级别的中间件**
+
+      绑定到 express.Router() 实例上的中间件，叫做路由级别的中间件。它的用法和应用级别中间件没有任何区别。只不过，应用级别中间件是绑定到 app 实例上，路由级别中间件绑定到 router 实例上
+
+      ```javascript
+      const express = require('express')
+      const app = express()
+      const router = express.Router()
+      
+      //路由级别中间件
+      router.use(function (req, res, next) {
+          console.log('Time', Date.now())
+          next()
+      })
+      
+      app.use('/', router)
+      ```
+
+      
+
+   3. **错误级别的中间件**
+
+      1. 错误级别中间件的**作用**：专门用来捕获整个项目中发生的异常错误，从而防止项目异常崩溃的问题。
+
+      2. **格式**：错误级别中间件的 function 处理函数中，必须有 4 个形参，形参顺序从前到后，分别是 (err, req, res, next)。
+
+         ```javascript
+         // 1. 定义路由
+         app.get('/', (req, res) => {
+           throw new Error('服务器内部发生了错误')
+           res.send('Home page.')
+         })
          
+         // 2. 定义错误级别的中间件，捕获整个项目的异常错误，从而防止程序的崩溃
+         app.use((err, req, res, next) => {
+           console.log('发生了错误' + err.message);
+           res.send('Error:' + err.message)
+         })
+         ```
 
+      3. **注意：**错误级别的中间件，必须注册在所有路由之后！
 
+   4. **Express 内置的中间件**
+
+      1. 自 Express 4.16.0 版本开始，Express 内置了 3 个常用的中间件，极大的提高了 Express 项目的开发效率和体验：
+
+         1. express.static 快速托管静态资源的内置中间件，例如： HTML 文件、图片、CSS 样式等（无兼容性）
+
+         2.  express.json 解析 JSON 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）
+
+         3. express.urlencoded 解析 URL-encoded 格式的请求体数据（有兼容性，仅在 4.16.0+ 版本中可用）
+
+            ```javascript
+            //配置解析 application/json 格式数据的内置中间件
+            app.use(express.json())
+            //配置解析 application/x-www-form-urllencoded 格式数据的内置中间件
+            app.use(express.urlencoded({ extended: false }))
+            ```
+
+            
+
+   5. **第三方的中间件**
+
+      1. 非 Express 官方内置的，而是由第三方开发出来的中间件，叫做第三方中间件。在项目中，可以按需下载并配置第三方中间件，从而提高项目的开发效率。
+      2. **注意：**Express 内置的 express.urlencoded 中间件，就是基于 body-parser 这个第三方中间件进一步封装出来的。
+      
+   6. **自定义中间件**
+   
+      1. **需求描述与实现步骤**
+         1. 自己手动模拟一个类似于 express.urlencoded 这样的中间件，来解析 POST 提交到服务器的表单数据。
+         2. 实现步骤：
+            1. 定义中间件
+            2. 监听 req 的 data 事件
+            3. 监听 req 的 end 事件
+            4. 使用 querystring 模块解析请求体数据
+            5. 将解析出来的数据对象挂载为 req.body
+            6. 将自定义中间件封装为模块
+
+### 使用 Express 写接口
+
+1. **创建基本的服务器**
+
+   ```javascript
+   // 导入 express 模块
+   const express = require('express')
+   // 创建 express 的服务器实例
+   const app = express()
+   
+   // 调用 app.listen 方法，指定端口号并启动web服务器
+   app.listen(80, function () {
+     console.log('Express server running at http://127.0.0.1')
+   })
+   ```
+
+   
+
+2. **创建** **API** **路由模块**
+
+   ```javascript
+   // apiRouter.js [路由模块]
+   const express = require('express')
+   const apiRouter = express.Router()
+   
+   // bind your rouer here...
+   
+   module.exports = apiRouter
+   
+   //..............................
+   
+   // app.js [导入并注册路由模块]
+   const apiRouter = require('./apiRouter.js')
+   app.use('/api', apiRouter)
+   ```
+
+3. **编写** **GET** **接口**
+
+   ```javascript
+   router.get('/get', (req, res) => {
+     //通过 req.query 获取客户端通过查询字符串, 发送到服务器的数据
+     const query = req.query
+     res.send({
+       status: 0, //0 表示处理成功 1 表示处理失败
+       msg: 'GET 请求成功', //状态的描述
+       data: query // 需要响应的数据
+     })
+   })
+   ```
+
+4. **编写** **POST** **接口**
+
+   ```javascript
+   router.post('/post', (req, res) => {
+     //通过 req.body 获取客户端通过查询字符串, 发送到服务器的数据
+     const body = req.body
+     res.send({
+       status: 0, //0 表示处理成功 1 表示处理失败
+       msg: 'post 请求成功', //状态的描述
+       data: body // 需要响应的数据
+     })
+   })
+   ```
+
+5. **CORS** **跨域资源共享**
+
+   1. **接口的跨域问题**
+
+      1. 解决接口跨域问题的方案主要有两种：
+         1. CORS（主流的解决方案，推荐使用）
+         2.  JSONP（有缺陷的解决方案：只支持 GET 请求）
+
+   2. **使用 cors 中间件解决跨域问题**
+
+      1. cors 是 Express 的一个第三方中间件。通过安装和配置 cors 中间件，可以很方便地解决跨域问题。
+      2. 使用步骤分为如下 3 步：
+         1. 运行 npm install cors 安装中间件
+         2. 使用 const cors = require('cors') 导入中间件
+         3. 在路由之前调用 app.use(cors()) 配置中间件
+
+   3. **什么是** **CORS**
+
+      1. CORS （Cross-Origin Resource Sharing，跨域资源共享）由一系列 HTTP 响应头组成，**这些** **HTTP** **响应头决定浏览器是否阻止前端** **JS** **代码跨域获取资源**。
+      2. 浏览器的同源安全策略默认会阻止网页“跨域”获取资源。但如果接口服务器配置了 CORS 相关的 HTTP 响应头，就可以解除浏览器端的跨域访问限制。
+
+   4. **CORS** **的注意事项**
+
+      1. CORS 主要在服务器端进行配置。客户端浏览器**无须做任何额外的配置**，即可请求开启了 CORS 的接口。
+      2. CORS 在浏览器中有兼容性。只有支持 XMLHttpRequest Level2 的浏览器，才能正常访问开启了 CORS 的服务端接口（例如：IE10+、Chrome4+、FireFox3.5+）。
+
+   5. **CORS** **响应头部** **- Access-Control-Allow-Origin** 
+
+      1. 响应头部中可以携带一个 **Access-Control-Allow-Origin** 字段，其语法如下:
+
+         `Access-Control-Allow-Origin: <origin> | *`
+
+         其中，origin 参数的值指定了允许访问该资源的外域 URL,如果指定了 Access-Control-Allow-Origin 字段的值为通配符 *****，表示允许来自任何域的请求
+
+   6. **CORS** **响应头部** **- Access-Control-Allow-Headers**
+
+      1. 默认情况下，CORS **仅**支持客户端向服务器发送如下的 9 个请求头：
+         1. Accept、Accept-Language、Content-Language、DPR、Downlink、Save-Data、Viewport-Width、Width 、Content-Type （值仅限于 text/plain、multipart/form-data、application/x-www-form-urlencoded 三者之一）
+         2. 如果客户端向服务器发送了额外的请求头信息，则需要在服务器端，通过 Access-Control-Allow-Headers 对额外的请求头进行声明，否则这次请求会失败！
+
+   7. **CORS** **响应头部** **- Access-Control-Allow-Methods**
+
+      1. 默认情况下，CORS 仅支持客户端发起 GET、POST、HEAD 请求。
+      2. 如果客户端希望通过 PUT、DELETE 等方式请求服务器的资源，则需要在服务器端，通过 Access-Control-Alow-Methods来指明实际请求所允许使用的 HTTP 方法。
+
+   8. **CORS请求的分类**
+
+      1. 客户端在请求 CORS 接口时，根据请求方式和请求头的不同，可以将 CORS 的请求分为两大类，分别是：
+         1. 简单请求
+            1. 同时满足以下两大条件的请求，就属于简单请求：
+               1. 请求方式：GET、POST、HEAD 三者之一
+               2. HTTP 头部信息不超过以下几种字段：无自定义头部字段、Accept、Accept-Language、Content-Language、DPR、Downlink、Save-Data、Viewport-Width、Width 、Content-Type（只有三个值application/x-www-form-urlencoded、multipart/form-data、text/plain）
+         2. 预检请求
+            1. 只要符合以下任何一个条件的请求，都需要进行预检请求：
+               1. 请求方式为 GET、POST、HEAD 之外的请求 Method 类型
+               2. 请求头中包含自定义头部字段
+               3. 向服务器发送了 application/json 格式的数据
+               4. 在浏览器与服务器正式通信之前，浏览器会先发送 OPTION 请求进行预检，以获知服务器是否允许该实际请求，所以这一次的 OPTION 请求称为“预检请求”。服务器成功响应预检请求后，才会发送真正的请求，并且携带真实数据。
+         3. **.** **简单请求和预检请求的区别**
+            1. **简单请求的特点**：客户端与服务器之间只会发生一次请求。
+            2. **预检请求的特点**：客户端与服务器之间会发生两次请求，OPTION 预检请求成功之后，才会发起真正的请求。
+
+   9. **JSONP** **接口**
+
+      1. **创建** **JSONP** **接口的注意事项**
+
+         1. 如果项目中已经配置了 CORS 跨域资源共享，为了**防止冲突**，必须在配置 CORS 中间件之前声明 JSONP 的接口。否则 JSONP 接口会被处理成开启了 CORS 的接口
+
+      2. **实现** **JSONP** **接口的步骤**
+
+         1. 获取客户端发送过来的回调函数的名字
+         2. 得到要通过 JSONP 形式发送给客户端的数据
+         3. 根据前两步得到的数据，拼接出一个函数调用的字符串
+         4. 把上一步拼接得到的字符串，响应给客户端的 <script> 标签进行解析执行
+
+      3. **实现** **JSONP** **接口的具体代码**
+
+         ```javascript
+         app.get('/api/jsonp',(req,res)=>{
+             //1。获取客户端发送过来的回调函数的名字
+             const funcName req.query.callback
+             //2.得到腰通过JSONP形式发送给客户端的数据
+             const data =name:'zs',age:22
+             //3.根据前两步得到的数据，拼接出一个函数调用的字符串
+             const scriptstr =${funcName)(${JSON.stringify(data)})'
+             //4.把上步拼接得到的字符串，响应给客户端的<script>标签进行解析执行
+             res.send(scriptstr)
+         )}
+         ```
+
+      4. **在网页中使用** **jQuery** **发起** **JSONP** **请求**
+
+         1. 调用 $.ajax() 函数，提供 JSONP 的配置选项，从而发起 JSONP 请求，示例代码如下：
+
+            ```javascript
+            $('#btnJSONP').on('click',function (
+                $.ajax({
+                    method:'GET',
+                    url:'http://127.0.0.1/api/jsonp',
+                    dataType:'jsonp',//表示要发起JSONP的请求
+                    success:function (res){
+                    console.log(res)
+            		}
+                })
+            })
+            ```
+
+            
 
