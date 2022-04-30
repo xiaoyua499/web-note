@@ -1157,5 +1157,323 @@
             })
             ```
 
-            
+## 数据库与身份认证
+
+### 数据库的基本概念
+
+1. **什么是数据库**
+
+   数据库（database）是用来组织、存储和管理数据的仓库。为了方便管理互联网世界中的数据，就有了数据库管理系统的概念（简称：数据库）。用户可以对数据库中的数据进行新增、查询、更新、删除等操作。
+
+2. **常见的数据库及分类**
+
+   1. 常见的数据库
+
+      1. **MySQL** 数据库（目前使用最广泛、流行度最高的开源免费数据库；Community + Enterprise）
+      2. Oracle 数据库（收费）
+      3. SQL Server 数据库（收费）
+      4. **Mongodb** 数据库（Community + Enterprise）
+
+   2. 其中，MySQL、Oracle、SQL Server 属于**传统型数据库**（又叫做：关系型数据库 或 SQL 数据库），这三者的设计理念相同，用法比较类似。
+
+      而 Mongodb 属于**新型数据库**（又叫做：非关系型数据库 或 NoSQL 数据库），它在一定程度上弥补了传统型数据库的缺陷。
+
+3. **传统型数据库的数据组织结构**
+
+   1. 传统型数据库中，数据的组织结构分为**数据库(database)、数据表(table)、数据行(row)、字段(field)**这 4 大部分组成。
+   2. **实际开发中库、表、行、字段的关系**
+      1. 在实际项目开发中，一般情况下，每个项目都对应独立的数据库。
+      2. 不同的数据，要存储到数据库的不同表中，例如：用户数据存储到 users 表中，图书数据存储到 books 表中。
+      3. 每个表中具体存储哪些信息，由字段来决定，例如：我们可以为 users 表设计 id、username、password 这 3 个字段.
+      4. 表中的行，代表每一条具体的数据。
+
+### MySQL的基本使用
+
+1. **使用** **MySQL Workbench** **管理数据库**
+
+   1. **连接数据库**
+
+      ![](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220430130056114.png)
+
+   2. **了解主界面的组成部分**
+
+      ![image-20220430130146331](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220430130146331.png)
+
+   3. **创建数据库**
+
+      ![image-20220430130208456](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220430130208456.png)
+
+   4. **创建数据表**
+
+      ![image-20220430130223036](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220430130223036.png)
+
+      1. DataType 数据类型：
+         1. int 整数
+         2.  varchar(len) 字符串
+         3. tinyint(1) 布尔值
+      2. 字段的特殊标识：
+         1.  PK（Primary Key）主键、唯一标识
+         2. NN（Not Null）值不允许为空
+         3. UQ（Unique）值唯一
+         4.  AI（Auto Increment）值自动增长
+
+   5. **向表中写入数据**
+
+      ![image-20220430130334013](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220430130334013.png)
+
+      1. **使用** **SQL** **管理数据库**
+
+         1. **什么是** **SQL**
+
+            1. SQL（英文全称：Structured Query Language）是结构化查询语言，专门用来访问和处理数据库的编程语言。能够让我们**以编程的形式**，**操作数据库里面的数据**。
+            2. 三个关键点：
+               1. SQL 是一门数据库编程语言
+               2. 使用 SQL 语言编写出来的代码，叫做 SQL 语句
+               3. SQL 语言只能在关系型数据库中使用（例如 MySQL、Oracle、SQL Server）。非关系型数据库（例如 Mongodb）不支持 SQL 语言
+
+         2. **SQL** **的学习目标**
+
+            1. 重点掌握如何使用 SQL 从数据表中：
+
+               查询数据（select） 、插入数据（insert into） 、更新数据（update） 、删除数据（delete）
+
+            2. 额外需要掌握的 4 种 SQL 语法：
+
+               where 条件、and 和 or 运算符、order by 排序、count(*) 函数
+
+         3. **SQL** **的** **SELECT** **语句**
+
+            1. **语法**
+
+               ```sql
+               -- SELECT 语句用于从表中查询数据。执行的结果被存储在一个结果表中（称为结果集）。
+               -- 从FOM指定的【表中】，查询出【所有的】数据。*表示【所有列)】
+               SELECT * FROM表名称
+               -- 从FROM指定的【表中】，查询出指定列名称（字段）的数据。
+               SELECT 列名称 FROM 表名称
+               ```
+
+            2. 注意：SQL 语句中的关键字对**大小写不敏感**。SELECT 等效于 select，FROM 等效于 from。
+
+         4. **SQL** **的** **INSERT INTO** **语句**
+
+            ```sql
+            -- INSERT INTO 语句用于向数据表中插入新的数据行，语法格式如下：
+            -- 语法解读：向指定的表中，插入如下几列数据，列的值通过 values指定
+            -- 注意：列和值要一对应，多个列和多个值之间，使用英文的逗号分隔
+            INSERT INT0 table_name(列1，列2，·.)VALUES(值1，值2，·.·.)
+            ```
+
+         5. **SQL** **的** **UPDATE** **语句**
+
+            ```sql
+            -- Update 语句用于修改表中的数据。语法格式如下：
+            -- 语法解读：
+            -- 1.用UPDATE指定要更新哪个表中的数据
+            -- 2.用SET指定列对应的新值
+            -- 3,用WHERE指定更新的条件
+            UPDATE 表名称 SET 列名称=新值 WHERE 列名称=某值
+            ```
+
+         6. **SQL** **的** **DELETE** **语句**
+
+            ```sql
+            -- DELETE 语句用于删除表中的行。语法格式如下：
+            -- 语法解读：
+            -- 从指定的表中，根据WHERE条件，删除对应的数据行
+            DELETE FROM 表名称 WHERE 列名称 = 值
+            ```
+
+         7. **SQL** **的** **WHERE** **子句**
+
+            ```sql
+            -- WHERE 子句用于限定选择的标准。在 SELECT、UPDATE、DELETE 语句中，皆可使用 WHERE 子句来限定选择的标准。
+            -- 查询语句中的WHERE条件
+            SELECT 列名称 FROM 表名称 WHERE 列 运算符 值
+            -- 更新语句中的WHERE条件
+            UPDATE 表名称 SET 列=新值 WHERE 列 运算符 值
+            -- 删除语句中的WHERE条件
+            DELETE FROM 表名称 WHERE 列 运算符 值
+            ```
+
+         8. **SQL** **的** **AND** **和** **OR** **运算符**
+
+            1. AND 和 OR 可在 WHERE 子语句中把两个或多个条件结合起来。
+            2. AND 表示必须同时满足多个条件，相当于 JavaScript 中的 && 运算符，例如 `if (a !== 10 && a !== 20)`
+            3. OR 表示只要满足任意一个条件即可，相当于 JavaScript 中的 || 运算符，例如 `if(a !== 10 || a !== 20)`
+
+         9. **SQL** **的** **ORDER BY** **子句**
+
+            1. ORDER BY 语句用于根据指定的列对结果集进行排序。
+
+            2. ORDER BY 语句**默认**按照升序对记录进行排序。
+
+            3. 如果您希望按照**降序**对记录进行排序，可以使用 DESC 关键字。
+
+            4. **ORDER BY** **子句** **–** **多重排序**
+
+               1. 对 users 表中的数据，先按照 status 字段进行降序排序，再按照 username 的字母顺序，进行升序排序，示例如下：
+
+                  ```sql
+                  -- 注意：DESC代表降序排序
+                  SELECT FROM users ORDER BY status DESC,username AS
+                  ```
+
+         10. **SQL** **的** **COUNT(\*)** **函数**
+
+             ```sql
+             -- COUNT(*) 函数用于返回查询结果的总数据条数，语法格式如下：
+             SELECT COUNT(*) FROM 表名称
+             ```
+
+             1. **使用** **AS** **为列设置别名**
+
+                ```sql
+                -- 将列名称从COUNT(*)修改为total
+                SELECT COUNT(*)AS total FROM users WHERE status=0
+                ```
+
+### 在项目中操作 MySQL
+
+1. **在项目中操作数据库的步骤**
+
+   1. 安装操作 MySQL 数据库的第三方模块（mysql）
+   2. 通过 mysql 模块连接到 MySQL 数据库
+   3. 通过 mysql 模块执行 SQL 语句
+
+2. **安装与配置** **mysql** **模块**
+
+   1. **安装** **mysql** **模块**
+
+      `npm install mysql`
+
+   2. **配置** **mysql** **模块**
+
+      ```javascript
+      const db = mysql.createPool({
+        host: '127.0.0.1', // 数据库的 IP 地址
+        user: 'root', // 
+        password: 'anmin123',
+        database: 'my_db_01',
+      })
+      ```
+
+   3. **测试** **mysql** **模块能否正常工作**
+
+      ```JavaScript
+      // 调用 db.query() 函数，指定要执行的 SQL 语句，通过回调函数拿到执行的结果：
+      // 测试 mysql 模块能否正常工作
+      db.query('select 1', (err, results) => {
+        if (err) {
+          return console.log(err.message);
+        }
+        console.log(results);
+      })
+      ```
+
+3. **使用** **mysql** **模块操作** **MySQL** **数据库**
+
+   1. **查询数据**
+
+      ```JavaScript
+      // 查询 users 表中所有的数据
+      const sqlStr = 'select * from users'
+      db.query(sqlStr, (err, results) => {
+        if(err) {
+          return console.log(err.message);
+        }
+        console.log(results);
+      })
+      ```
+
+   2. **插入数据**
+
+      ```JavaScript
+      // 向 users 表中，新增一条数据，其中 username 的值为 Spider-Man，password 的值为 pcc123
+      const user = { username: 'Spider-Man', password: 'pccnodec123' }
+      // 定义待执行的 SQL 语句
+      const sqlStr = 'insert into users (username, password) values (?, ?)'
+      // 执行 SQL 语句
+      db.query(sqlStr, [user.username, user.password], (err, results) => {
+        if (err) return console.log('插入数据失败!'+err.message);
+        if (results.affectedRows === 1) {
+          console.log('插入数据成功!'); 
+        }
+      })
+      
+      // 演示插入数据的便捷方式
+      const user = { username: 'Spider-Man2', password: 'pcc4321' }
+      const sqlStr = 'insert into users set ?'
+      db.query(sqlStr, user, (err, results) => {
+        if (err) return console.log('插入数据失败!' + err.message);
+        if (results.affectedRows === 1) {
+          console.log('插入数据成功!');
+        }
+      })
+      
+      ```
+
+   3. **更新数据**
+
+      ```JavaScript
+      // 演示如何更新用户的信息
+      const user = { id: 39, username: 'aaa', password: '000' }
+      // 定义待执行的 SQL 语句
+      const sqlStr = 'update users set username=?, password=? where id=?'
+      // 执行 SQL 语句
+      db.query(sqlStr, [user.username, user.password, user.id], (err, results) => {
+        if (err) return console.log('更新数据失败!' + err.message);
+        if (results.affectedRows === 1) {
+          console.log('更新数据成功!');
+        }
+      })
+      
+      // 演示更新数据的便捷方式
+      const user = { id: 39, username: 'aaaa', password: '0000' }
+      // 定义待执行的 SQL 语句
+      const sqlStr = 'update users set ? where id=?'
+      // 执行 SQL 语句
+      db.query(sqlStr, [user, user.id], (err, results) => {
+        if (err) return console.log('更新数据失败!' + err.message);
+        if (results.affectedRows === 1) {
+          console.log('更新数据成功!');
+        }
+      })
+      ```
+
+   4. **删除数据**
+
+      ```JavaScript
+      // 删除 id 为 35 的用户
+      const sqlStr = 'delete from users where id=?'
+      // 执行 SQL 语句
+      db.query(sqlStr, 35, (err, results) => {
+        if (err) return console.log('更新数据失败!' + err.message);
+        if (results.affectedRows === 1) {
+          console.log('删除数据成功!');
+        }
+      })
+      ```
+
+   5. **标记删除**
+
+      ```JavaScript
+      //使用 DELETE 语句，会把真正的把数据从表中删除掉。为了保险起见，推荐使用标记删除的形式，来模拟删除的动作。
+      //所谓的标记删除，就是在表中设置类似于 status 这样的状态字段，来标记当前这条数据是否被删除。
+      //当用户执行了删除的动作时，我们并没有执行 DELETE 语句把数据删除掉，而是执行了 UPDATE 语句，将这条数据对应的 status 字段标记为删除即可。
+      
+      // 标记删除
+      const sqlStr = 'update users set status=? where id=?'
+      // 执行 SQL 语句
+      db.query(sqlStr, [1, 39], (err, results) => {
+        if (err) return console.log('更新数据失败!' + err.message);
+        if (results.affectedRows === 1) {
+          console.log('删除数据成功!');
+        }
+      })
+      ```
+
+      
+
+
 
