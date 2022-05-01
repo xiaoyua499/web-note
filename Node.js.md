@@ -1473,7 +1473,279 @@
       })
       ```
 
-      
+### 前后端的身份认证
 
+1. **Web** **开发模式**
 
+   1. 目前主流的 Web 开发模式有两种，分别是：
+      1.  基于服务端渲染的传统 Web 开发模式
+      2. 基于前后端分离的新型 Web 开发模式
+   2. **服务端渲染的Web 开发模式**
+      1. 服务端渲染的概念：服务器发送给客户端的 HTML 页面，是在服务器通过字符串的拼接，动态生成的。因此，客户端不需要使用 Ajax 这样的技术额外请求页面的数据。
+      2. **服务端渲染的优缺点**
+         1. 优点：
+            1.  **前端耗时少。**因为服务器端负责动态生成 HTML 内容，浏览器只需要直接渲染页面即可。尤其是移动端，更省电。
+            2.  **有利于SEO。**因为服务器端响应的是完整的 HTML 页面内容，所以爬虫更容易爬取获得信息，更有利于 SEO。
+         2. 缺点：
+            1. **占用服务器端资源。**即服务器端完成 HTML 页面内容的拼接，如果请求较多，会对服务器造成一定的访问压力。
+            2. **不利于前后端分离，开发效率低。**使用服务器端渲染，则**无法进行分工合作**，尤其对于**前端复杂度高**的项目，不利于项目高效开发。
+      3. **前后端分离的 Web 开发模式**
+         1. 前后端分离的概念：前后端分离的开发模式，**依赖于** **Ajax** **技术的广泛应用**。简而言之，前后端分离的 Web 开发模式，就是**后端只负责提供** **API** **接口，前端使用** **Ajax** **调用接口**的开发模式。
+         2. **前后端分离的优缺点**
+            1. 优点：
+               1. **开发体验好。**前端专注于 UI 页面的开发，后端专注于api 的开发，且前端有更多的选择性。
+               2. **用户体验好。**Ajax 技术的广泛应用，极大的提高了用户的体验，可以轻松实现页面的局部刷新。
+               3. **减轻了服务器端的渲染压力。**因为页面最终是在每个用户的浏览器中生成的。
+            2. 缺点：**不利于** **SEO****。**因为完整的 HTML 页面需要在客户端动态拼接完成，所以爬虫对无法爬取页面的有效信息。（解决方案：利用 Vue、React 等前端框架的 **SSR** （server side render）技术能够很好的解决 SEO 问题！）
+      4. **如何选择** **Web** **开发模式**
+         1. 比如企业级网站，主要功能是展示而没有复杂的交互，并且需要良好的 SEO，则这时我们就需要使用服务器端渲染；
+         2. 类似后台管理项目，交互性比较强，不需要考虑 SEO，那么就可以使用前后端分离的开发模式。
+         3. 具体使用何种开发模式并不是绝对的，为了**同时兼顾**了**首页的渲染速度**和**前后端分离的开发效率**，一些网站采用了首屏服务器端渲染 + 其他页面前后端分离的开发模式。
 
+2. **身份认证**
+
+   1. **什么是身份认证**
+
+      1. **身份认证**（Authentication）又称“身份验证”、“鉴权”，是指**通过一定的手段，完成对用户身份的确认**。
+      2. 在 Web 开发中，也涉及到用户身份的认证，例如：各大网站的**手机验证码登录**、**邮箱密码登录**、**二维码登录**等。
+
+   2. **为什么需要身份认证**
+
+      身份认证的目的，是为了**确认当前所声称为某种身份的用户，确实是所声称的用户**。
+
+   3. **不同开发模式下的身份认证**
+
+      1. 对于服务端渲染和前后端分离这两种开发模式来说，分别有着不同的身份认证方案：
+         1. 服务端渲染推荐使用 **Session** **认证机制**
+         2. 前后端分离推荐使用 **JWT** **认证机制**
+
+3. **Session** **认证机制**
+
+   1. **HTTP** **协议的无状态性**
+
+      1. HTTP 协议的无状态性，指的是客户端**的每次** **HTTP** **请求都是独立的**，连续多个请求之间没有直接的关系，**服务器不会主动保留每次** **HTTP** **请求的状态**。
+
+   2. **Cookie**
+
+      1. Cookie 是**存储在用户浏览器中的一段不超过** **4 KB** **的字符串**。它由一个名称（Name）、一个值（Value）和其它几个用于控制 Cookie 有效期、安全性、使用范围的可选属性组成。
+
+      2. 不同域名下的 Cookie 各自独立，每当客户端发起请求时，会**自动**把**当前域名下**所有**未过期的** **Cookie** 一同发送到服务器。
+
+      3. **Cookie的几大特性：**
+
+         1. 自动发送
+         2. 域名独立
+         3. 过期时限
+         4. 4KB 限制
+
+      4. **Cookie** **在身份认证中的作用**
+
+         1. 客户端第一次请求服务器的时候，服务器**通过响应头的形式**，向客户端发送一个身份认证的 Cookie，客户端会自动将 Cookie 保存在浏览器中。
+         2. 当客户端浏览器每次请求服务器的时候，浏览器会**自动**将身份认证相关的 Cookie，**通过请求头的形式**发送给服务器，服务器即可验明客户端的身份。
+
+      5. **Cookie** **不具有安全性**
+
+         由于 Cookie 是存储在浏览器中的，而且**浏览器也提供了读写** **Cookie** **的** **API**，因此 **Cookie** **很容易被伪造**，不具有安全性。因此不建议服务器将重要的隐私数据，通过 Cookie 的形式发送给浏览器。
+
+   3. **Session** **的工作原理**
+
+      ![image-20220501100630943](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220501100630943.png)
+
+   4. **在** **Express** **中使用** **Session** **认证**
+
+      1. **安装** **express-session** **中间件**
+
+         `npm i express-session`
+
+      2. **配置** **express-session** **中间件**
+
+         ```javascript
+         //1,导入session中间件
+         var session require('express-session')
+         //2.配置Session中间件
+         app.use(session({
+             secret:'keyboard cat',//secret属性的值可以为任意字符串
+             resave:false,//固定写法
+             saveUninitialized:true//固定写法
+         }))
+         ```
+
+      3. **向** **session** **中存数据**
+
+         ```javascript
+         app.post('/api/login', (req, res) => {
+           // 判断用户提交的登录信息是否正确
+           if (req.body.username !== 'admin' || req.body.password !== '000000') {
+             return res.send({ status: 1, msg: '登录失败' })
+           }
+         
+           // TODO_02：请将登录成功后的用户信息，保存到 Session 中
+           // 注意：只有成功配置了 express-session 这个中间件之后，才能够通过 req 点出来 session 这个属性
+           req.session.user = req.body // 用户的信息
+           req.session.islogin = true // 用户的登录状态
+         
+           res.send({ status: 0, msg: '登录成功' })
+         })
+         ```
+
+      4. **从** **session** **中取数据**
+
+         ```javascript
+         app.get('/api/username', (req, res) => {
+           // TODO_03：请从 Session 中获取用户的名称，响应给客户端
+           if (!req.session.islogin) {
+             return res.send({ status: 1, msg: 'fail' })
+           }
+           res.send({
+             status: 0,
+             msg: 'success',
+             username: req.session.user.username,
+           })
+         })
+         ```
+
+      5. **清空** **session**
+
+         ```javascript
+         app.post('/api/logout', (req, res) => {
+           // TODO_04：清空 Session 信息
+           req.session.destroy()
+           res.send({
+             status: 0,
+             msg: '退出登录成功',
+           })
+         })
+         ```
+
+4. **JWT** **认证机制**
+
+   1. **了解** **Session** **认证的局限性**
+
+      1. Session 认证机制需要配合 Cookie 才能实现。由于 Cookie 默认不支持跨域访问，所以，当涉及到前端跨域请求后端接口的时候，**需要做很多额外的配置**，才能实现跨域 Session 认证。
+      2. 注意：
+         1. 当前端请求后端接口**不存在跨域问题**的时候，**推荐使用** **Session** 身份认证机制。
+         2. 当前端需要跨域请求后端接口的时候，不推荐使用 Session 身份认证机制，推荐使用 JWT 认证机制。
+
+   2. **什么是** **JWT**
+
+      JWT（英文全称：JSON Web Token）是目前**最流行**的**跨域认证解决方案**。
+
+   3. **JWT** **的工作原理**
+
+      ![image-20220501110220983](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20220501110220983.png)
+
+      用户的信息通过 Token 字符串的形式，保存在客户端浏览器中。服务器通过还原 Token 字符串的形式来认证用户的身份。
+
+   4. **JWT** **的组成部分**
+
+      1. JWT 通常由三部分组成，分别是 Header（头部）、Payload（有效荷载）、Signature（签名）。
+
+         三者之间使用英文的“.”分隔，格式如下：
+
+         `Header.Payload.Signature`
+
+      2. **JWT** **的三个部分各自代表的含义**
+
+         1. JWT 的三个组成部分，从前到后分别是 Header、Payload、Signature。
+
+            其中：
+
+            1. **Payload** 部分**才是真正的用户信息**，它是用户信息经过加密之后生成的字符串。
+            2. Header 和 Signature 是**安全性相关**的部分，只是为了保证 Token 的安全性。
+
+   5. **JWT** **的使用方式**
+
+      1. 客户端收到服务器返回的 JWT 之后，通常会将它储存在 localStorage 或 sessionStorage 中。
+
+      2. 此后，客户端每次与服务器通信，都要带上这个 JWT 的字符串，从而进行身份认证。推荐的做法是**把** **JWT** **放在** **HTTP** **请求头的** **Authorization** **字段中**，格式如下：
+
+         `Authorization:Bearer <token>`
+
+   6. **在** **Express** **中使用** **JWT**
+
+      1. **安装** **JWT** **相关的包**
+
+         `npm install jsonwebtoken express-jwt`
+
+         其中：
+
+         **jsonwebtoken** 用于**生成** **JWT** **字符串**
+
+         **express-jwt** 用于**将** **JWT** **字符串解析还原成** **JSON** **对象**
+
+      2. **导入** **JWT** **相关的包**
+
+         ```JavaScript
+         //1.导入用于生成JWT字符串的包
+         const jwt require('jsonwebtoken')
+         //2.导入用于将客户端发送过来的JWT字符串，解析还原成JS0N对像的包
+         const expressJWT require('express-jwt')
+         ```
+
+      3. **定义** **secret** **密钥**
+
+         1. 为了保证 JWT 字符串的安全性，防止 JWT 字符串在网络传输过程中被别人破解，我们需要专门定义一个用于**加密**和**解密**的 secret 密钥：
+
+            1. 当生成 JWT 字符串的时候，需要使用 secret 密钥对用户的信息进行加密，最终得到加密好的 JWT 字符串
+
+            2. 当把 JWT 字符串解析还原成 JSON 对象的时候，需要使用 secret 密钥进行解密
+
+               ```javascript
+               //secret密钥的本质：就是一个字符串
+               const secretkey 'itheima No1 ^^
+               ```
+
+      4. **在登录成功后生成** **JWT** **字符串**
+
+         ```javascript
+         //调用 jsonwebtoken 包提供的 sign() 方法，将用户的信息加密成 JWT 字符串，响应给客户端：
+         //登录接口
+         app.post('/api/login',function(req,res){
+             //··省略登录失败情况下的代码
+             //用户登录成功之后，生成JWT字符串，通过token属性响应给客户端
+             res.send({
+             status:200,
+             message:'登录成功！'，
+             //调用jwt,sig()生成JWT字符串，三个参数分别是：用户信息对像、加密密钥、配置对像
+             token:jwt.sign({username:userinfo.username }secretKey,expiresIn:'30s')
+         })
+         ```
+
+      5. **将** **JWT** **字符串还原为** **JSON** **对象**
+
+         1. 客户端每次在访问那些有权限接口的时候，都需要主动通过**请求头中的** **Authorization** **字段**，将 Token 字符串发送到服务器进行身份认证。此时，服务器可以通过 **express-****jwt** 这个中间件，自动将客户端发送过来的 Token 解析还原成 JSON 对象：
+
+            ```javascript
+            //使用app.use()来注册中间件
+            //expressJWT({secret:secretKey})就是用来解析Token的中间件
+            //.unless({path:[/\/api\//]})用来指定哪些接口不需要访问权限
+            app.use(expressJWT({secret:secretKey }).unless({path:[/^\/api\//]})
+            ```
+
+      6. **使用** **req.user** **获取用户信息**
+
+         ```javascript
+         //当 express-jwt 这个中间件配置成功之后，即可在那些有权限的接口中，使用 req.user 对象，来访问从 JWT 字符串中解析出来的用户信息了，示例代码如下：
+         //这是一个有权限的API接口
+         app.get('/admin/getinfo',function(req,res){
+             console.log(req.user)
+             res.send({
+             status:200,
+             message:'获取用户信息成功！
+             data:reg.user
+         })
+         ```
+
+      7. **捕获解析** **JWT** **失败后产生的错误**
+
+         ```javascript
+         //当使用 express-jwt 解析 Token 字符串时，如果客户端发送过来的 Token 字符串过期或不合法，会产生一个解析失败的错误，影响项目的正常运行。我们可以通过 Express 的错误中间件，捕获这个错误并进行相关的处理，示例代码如下：
+         app.use((err,req,res,next)=>{
+             //token解析失败导致的错误
+             if(err.name ==='UnauthorizedError'){
+             return res.send({status:401,message:'无效的token'})
+             }
+             //其它原因导致的错误
+             res.send({status:500,message:'未错误'})
+         })
+         ```
