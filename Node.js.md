@@ -1706,8 +1706,8 @@
              res.send({
              status:200,
              message:'登录成功！'，
-             //调用jwt,sig()生成JWT字符串，三个参数分别是：用户信息对像、加密密钥、配置对像
-             token:jwt.sign({username:userinfo.username }secretKey,expiresIn:'30s')
+             /调用jwt,sig()生成JWT字符串，三个参数分别是：用户信息对像、加密密钥、配置对像
+             token:jwt.sign({username:userinfo.username }secretKey,expiresIn:'30s'}
          })
          ```
 
@@ -1743,9 +1743,13 @@
          app.use((err,req,res,next)=>{
              //token解析失败导致的错误
              if(err.name ==='UnauthorizedError'){
-             return res.send({status:401,message:'无效的token'})
-             }
+             return res.send([status:401,message:'无效的token'})
              //其它原因导致的错误
              res.send({status:500,message:'未错误'})
          })
          ```
+
+         
+
+
+
