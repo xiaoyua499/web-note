@@ -438,60 +438,214 @@
 
 ### 模块与组件、模块化与组件化 
 
-1. **非单文件组件**
+1. **模块**
 
-   1. **Vue中使用组件的三大步骤：**
+   1. 理解: 向外提供特定功能的 js 程序, 一般就是一个 js 文件
+   2. 为什么: js 文件很多很复杂 
+   3. 作用: 复用 js, 简化 js 的编写, 提高 js 运行效率
 
-      1. **定义组件(创建组件)**
-         1. 使用`Vue.extend(options)`创建，其中options和new Vue(options)时传入的那个options几乎一样，但也有点区别；
-         2. 区别如下：
-            1. el不要写，为什么？ ——— 最终所有的组件都要经过一个vm的管理，由vm中的el决定服务哪个容器。
-            2. data必须写成函数，为什么？ ———— 避免组件被复用时，数据存在引用关系。
-            3.  备注：使用template可以配置组件结构。
-      2. **注册组件**
-         1. 局部注册：靠new Vue的时候传入components选项
-         2. 全局注册：靠Vue.component('组件名',组件)
-      3. **使用组件(写组件标签)**
-         1. <school></school>
+2. **组件**
 
-   2. **几个注意点**：
+   1. 理解: 用来实现局部(特定)功能效果的代码集合(html/css/js/image…..)
+   2. 为什么: 一个界面的功能很复杂
+   3. 作用: 复用编码, 简化项目编码, 提高运行效率
 
-      1. **关于组件名**:
-         1. 一个单词组成：
-            1. 第一种写法(首字母小写)：school
-            2. 第二种写法(首字母大写)：School
-         2. 多个单词组成：
-            1. 第一种写法(kebab-case命名)：my-school
-            2.  第二种写法(CamelCase命名)：MySchool (需要Vue脚手架支持)
-         3. 备注：
-            1. 组件名尽可能回避HTML中已有的元素名称，例如：h2、H2都不行。
-            2. 可以使用name配置项指定组件在开发者工具中呈现的名字。
-      2. **关于组件标签**:
-         1.  第一种写法：<school></school>
-         2.  第二种写法：<school/>
-         3. 备注：不用使用脚手架时，<school/>会导致后续组件不能渲染。
-      3. **一个简写方式**：
-         1. const school = Vue.extend(options) 可简写为：const school = options
-      
-   3. **关于 VueComponent**
+3. **模块化**
 
-      1. school组件本质是一个名为VueComponent的构造函数，且不是程序员定义的，是Vue.extend生成的。
+   当应用中的 js 都以模块来编写的, 那这个应用就是一个模块化的应用。
 
-      2. 我们只需要写<school/>或<school></school>，Vue解析时会帮我们创建school组件的实例对象， 即Vue帮我们执行的：new VueComponent(options)。
+4. **组件化**
 
-      3. 特别注意：每次调用Vue.extend，返回的都是一个全新的VueComponent！！！！
+   当应用中的功能都是多组件的方式来编写的, 那这个应用就是一个组件化的应用,。
 
-      4. 关于this指向：
+### 非单文件组件
 
-         1. 组件配置中：
+1. **Vue中使用组件的三大步骤：**
 
-            data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【VueComponent实例对象】。
+   1. **定义组件(创建组件)**
+      1. 使用`Vue.extend(options)`创建，其中options和new Vue(options)时传入的那个options几乎一样，但也有点区别；
+      2. 区别如下：
+         1. el不要写，为什么？ ——— 最终所有的组件都要经过一个vm的管理，由vm中的el决定服务哪个容器。
+         2. data必须写成函数，为什么？ ———— 避免组件被复用时，数据存在引用关系。
+         3.  备注：使用template可以配置组件结构。
+   2. **注册组件**
+      1. 局部注册：靠new Vue的时候传入components选项
+      2. 全局注册：靠Vue.component('组件名',组件)
+   3. **使用组件(写组件标签)**
+      1. <school></school>
 
-         2. new Vue(options)配置中：
+2. **几个注意点**：
 
-            data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【Vue实例对象】。
+   1. **关于组件名**:
+      1. 一个单词组成：
+         1. 第一种写法(首字母小写)：school
+         2. 第二种写法(首字母大写)：School
+      2. 多个单词组成：
+         1. 第一种写法(kebab-case命名)：my-school
+         2.  第二种写法(CamelCase命名)：MySchool (需要Vue脚手架支持)
+      3. 备注：
+         1. 组件名尽可能回避HTML中已有的元素名称，例如：h2、H2都不行。
+         2. 可以使用name配置项指定组件在开发者工具中呈现的名字。
+   2. **关于组件标签**:
+      1.  第一种写法：<school></school>
+      2.  第二种写法：<school/>
+      3. 备注：不用使用脚手架时，<school/>会导致后续组件不能渲染。
+   3. **一个简写方式**：
+      1. const school = Vue.extend(options) 可简写为：const school = options
+   
+3. **关于 VueComponent**
 
-      5. VueComponent的实例对象，以后简称vc（也可称之为：组件实例对象）。
+   1. school组件本质是一个名为VueComponent的构造函数，且不是程序员定义的，是Vue.extend生成的。
 
-         Vue的实例对象，以后简称vm。
+   2. 我们只需要写<school/>或<school></school>，Vue解析时会帮我们创建school组件的实例对象， 即Vue帮我们执行的：new VueComponent(options)。
 
+   3. 特别注意：每次调用Vue.extend，返回的都是一个全新的VueComponent！！！！
+
+   4. 关于this指向：
+
+      1. 组件配置中：
+
+         data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【VueComponent实例对象】。
+
+      2. new Vue(options)配置中：
+
+         data函数、methods中的函数、watch中的函数、computed中的函数 它们的this均是【Vue实例对象】。
+
+   5. VueComponent的实例对象，以后简称vc（也可称之为：组件实例对象）。
+
+      Vue的实例对象，以后简称vm。
+   
+4. 一个重要的内置关系：VueComponent.prototype.__proto__ === Vue.prototype
+
+   **让组件实例对象（vc）可以访问到 Vue原型上的属性、方法。**
+
+### 单文件组件
+
+1. **一个 .vue  文件的组成**
+
+   1.  **模板页面**
+
+      ```vue
+      <template>
+      	页面模板
+      </template>
+      ```
+
+   2. **JS 模块对象**
+
+      ```vue
+      <script>
+          export default {
+          	data() {return {}}, 
+          	methods: {}, 
+              computed: {}, 
+              components: {}
+          }
+      </script>
+      ```
+
+   3. **样式**
+
+      ```vue
+      <style>
+      	样式定义
+      </style>
+      ```
+
+2. **基本使用**
+
+   1. 引入组件 
+   2. 映射成标签 
+   3. 使用组件标签
+
+## 使用 Vue 脚手架
+
+### 初始化脚手架
+
+1. **说明**
+
+   1. Vue 脚手架是 Vue 官方提供的标准化开发工具（开发平台）。
+   2. 最新的版本是 4.x。
+   3. 文档: https://cli.vuejs.org/zh/
+
+2. **具体步骤**
+
+   1. （仅第一次执行) 全局安装@vue/cli。
+
+      `npm install -g @vue/cli`
+
+   2. 切换到你要创建项目的目录，然后使用命令创建项目
+
+      `vue create xxxx`
+
+   3. 启动项目
+
+      `npm run serve`
+
+3. **模板项目的结构**
+
+   ```
+   ├── node_modules 
+   ├── public
+   │   ├── favicon.ico: 页签图标
+   │   └── index.html: 主页面
+   ├── src
+   │   ├── assets: 存放静态资源
+   │   │   └── logo.png
+   │   │── component: 存放组件
+   │   │   └── HelloWorld.vue
+   │   │── App.vue: 汇总所有组件
+   │   │── main.js: 入口文件
+   ├── .gitignore: git版本管制忽略的配置
+   ├── babel.config.js: babel的配置文件
+   ├── package.json: 应用包配置文件 
+   ├── README.md: 应用描述文件
+   ├── package-lock.json：包版本控制文件
+   ```
+
+4. **关于不同版本的Vue**
+
+   1. vue.js与vue.runtime.xxx.js的区别：
+      1. vue.js是完整版的Vue，包含：核心功能 + 模板解析器。
+      2. vue.runtime.xxx.js是运行版的Vue，只包含：核心功能；没有模板解析器。
+   2. 因为vue.runtime.xxx.js没有模板解析器，所以不能使用template这个配置项，需要使用render函数接收到的createElement函数去指定具体内容。
+
+5. **vue.config.js配置文件**
+
+   1. 使用vue inspect > output.js可以查看到Vue脚手架的默认配置。
+   2. 使用vue.config.js可以对脚手架进行个性化定制，详情见：https://cli.vuejs.org/zh
+
+### ref 与 props
+
+1. **ref属性**
+   1. 被用来给元素或子组件注册引用信息（id的替代者）
+   2. 应用在html标签上获取的是真实DOM元素，应用在组件标签上是组件实例对象（vc）
+   3. 使用方式：
+       1. 打标识：```<h1 ref="xxx">.....</h1>``` 或 ```<School ref="xxx"></School>```
+       2. 获取：```this.$refs.xxx```
+
+2. **props配置项**
+
+   1. 功能：让组件接收外部传过来的数据
+
+   2. 传递数据：```<Demo name="xxx"/>```
+
+   3. 接收数据：
+
+       1. 第一种方式（只接收）：```props:['name'] ```
+
+       2. 第二种方式（限制类型）：```props:{name:String}```
+
+       3. 第三种方式（限制类型、限制必要性、指定默认值）：
+
+           ```js
+           props:{
+           	name:{
+                   type:String, //类型
+                   required:true, //必要性
+                   default:'老王' //默认值
+           	}
+           }
+           ```
+
+       > 备注：props是只读的，Vue底层会监测你对props的修改，如果进行了修改，就会发出警告，若业务需求确实需要修改，那么请复制props的内容到data中一份，然后去修改data中的数据。
