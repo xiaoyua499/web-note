@@ -1223,10 +1223,1253 @@ animate(span, 200);
       localStorage.clear()
       ```
 
+# ES6~ES11
+
+## **ES6**
+
+### let变量声明以及声明特性
+
+1.**声明变量**
+
+```js
+let a;
+let b,c,d;
+let e = 100;
+let f = 521, g = 'iloveyou', h = [];
+```
+
+2.**声明特性**
+
+1. 变量不能重复声明
+2. 块级作用域  全局、函数、eval
+3. 不存在变量提升
+4. 不影响作用域链
+
+### const 定义常量
+
+1.**声明变量**
+
+```js
+const SCHOOL = '尚硅谷'
+```
+
+1. 一定要赋初始值
+
+2. 一般常量使用大写（潜规则）
+
+   `const A = 100`
+
+3. 常量的值不能修改
+
+4. 块级作用域
+
+5. 对于数组和对象的元素修改，不算做对常量的修改，不会报错
+
+   ```js
+   const TEAM = ['UZI','MLXG','Ming','Letme','xiaohu']
+   TEAM.push('Zz1tai')
+   ```
+
+###变量的解构赋值
+
+> ​	ES6 允许按照一定模式从数组中和对象中提取值，对变量进行赋值，这被称为解构赋值。
+>
+
+ 1. **数组的解构**
+
+    ```js
+    const F4 = ['小沈阳','刘能','赵四','宋小宝']
+    let [xiao,liu,zhao,song] = F4
+    console.log(xiao);//小沈阳
+    console.log(liu);// 刘能
+    console.log(zhao);// 赵四
+    console.log(song);// 宋小宝
+    ```
+
+2. **对象的解构**
+
+   ```js
+   const zhao = {
+     name:'赵本山',
+     age:'不详',
+     xiaopin:function(){
+       console.log('我可以演小品');
+     }
+   }
+   let {name,age,xiaopin} = zhao
+   console.log(name);//赵本山
+   console.log(age);//不详
+   console.log(xiaopin);
+   /*
+     ƒ (){
+         console.log('我可以演小品');
+       }
+   */
+   ```
+
+### 模板字符串
+
+> ​	ES6 引入新的声明字符串的方式
+
+1. **声明**
+
+2. **内容中可以直接出现换行符**
+
+   ```js
+   let str = `<ul>
+   						<li></li>
+   						<li></li>
+   						<li></li>
+   					</ul>`
+   ```
+
+3. **变量拼接**
+
+   ```js
+   let lovest = 'wx'
+   let out = `${lovest}是我`
+   console.log(out);//wx是我
+   ```
+
+### 简化对象写法
+
+> ​	ES6 允许我们在大括号里面，直接写入变量和函数，作为对象的塑像和方法
+
+```js
+let name = '尚硅谷'
+let change = function(){
+  console.log('我们可以改变你')
+}
+
+const school = {
+  name,
+  change,
+  improve(){
+    console.log("我们可以提高你的技能")
+  }
+}
+```
+
+### 箭头函数
+
+> ​		ES6 允许使用【箭头】（=>）定义函数
+
+1. **声明函数**
+
+   ```js
+   let fn = () => {
+     return
+   }
+   
+   //调用函数
+   fn()
+   ```
+
+2. **特性**
+
+   1. this 是静态的。 this 始终指向函数声明时所在作用域下的 this 值
+
+      ```js
+      function getName(){
+        console.log(this.name);
+      }
+      let getName2=()=>{
+        console.log(this.name);
+      }
       
+      //设置 window 对象的 name 属性
+      window.name = '尚硅谷'
+      const school = {
+        name:"ATGUIGU"
+      }
+      
+      //直接调用
+      getName() //尚硅谷
+      getName2() //尚硅谷
+      
+      //call 方法调用
+      getName.call(school) //ATGUIGU
+        getName2.call(school) //尚硅谷
+      ```
+
+   2. 不能作为构造实例化对象
+
+      ```js
+      let Person = (name, age) => {
+        this.name = name
+        this.age = age
+      }
+      
+      let me = new Person('xiao',30)
+      console.log(me)
+      // 报错
+      ```
+
+   3. 不能是使用 **arguments** 变量
+
+      ```js
+      let fn = () => {
+        console.log(arguments)
+      }
+      fn(1,2,3)
+      // 报错
+      ```
+
+   4. 箭头函数的简写
+
+      1. 省略小括号，当形参只有一个时
+
+         ```js
+         let add = n => {
+           return n + n
+         }
+         console.log(add(9))
+         ```
+
+      2. 省略花括号，当代码只有一条语句时，此时 return 必须省略，且语句的执行结果就是函数的返回值
+
+         ```js
+         let pow = n => n + n
+         console.log(pow(9))
+         ```
+
+   5. 使用场景
+      1. 箭头函数适合与 this 无关的回调。定时器、数组的方法回调
+      2. 箭头函数不适合与 this 有关的回调。 事件回调，对象的方法 
+
+### 函数参数默认值
+
+> ​	ES6 允许给函数参数赋值初始值
+
+1. 形参初始值 具有默认值的参数，一般位置靠后（潜规则）
+
+   ```js
+   function add (a,b,c=10) {
+     return a + b + c
+   }
+   let result = add(1, 2)
+   console.log(result) //13
+   ```
+
+2. 与解构赋值结合
+
+   ```js
+   function connect ({host = "127.0.0.1", username, password, port}) {
+     console.log(host) // localhost
+     console.log(username) // root
+     console.log(password) // root
+     console.log(port) // 3306
+   }
+   connect({
+     host: 'localhost',
+     username: 'root',
+     password: 'root',
+     port: 3306
+   })
+   ```
+
+### rest 参数
+
+> ES6 引入 **rest** 参数， 用于获取函数的实参。用来代替 **arguments**
+
+1. 使用
+
+   ```js
+   function date (...args) {
+     console.log(args)
+   }
+   rest('11', '22', '33')
+   ```
+
+2. rest 参数必须要放到参数最后
+
+   ```js
+   function fn (a, b, ...args){
+     console.log(a)
+     console.log(b)
+     console.log(args)
+   }
+   fn(1, 2, 3, 4, 5, 6)
+   ```
+
+### 扩展运算符 
+
+> ES6 引入 【...】 扩展运算符将【数组】转换为以逗号分隔的【参数序列】
+
+```js
+//声明一个数组
+const tf = ['易烊千玺', '王源', '王俊凯']
+//声明一个函数
+function chuwan () {
+  console.log(arguments)
+}
+chunean(...tf) // chunwan('易烊千玺', '王源', '王俊凯')
+```
+
+1. 数组的合并
+
+   ```js
+   const kuaizi = ['1', '2']
+   const fenghuang = ['3', '4']
+   const kuaizifenghuang = [...kuaizi, ...fenghuang]
+   console.log(kuaizifenghuang) // ['1', '2', '3', '4']
+   ```
+
+2. 数组的克隆
+
+   ```js
+   const sanzihua = ['E', 'G', 'M']
+   const sanyecao = [...sanzhihua]
+   console.log(sanyecao) // ['E', 'G', 'M']
+   ```
+
+3. 将伪数组转化为真正的数组
+
+   ```html
+   <div></div>
+   <div></div>
+   <div></div>
+   <script>
+     const divs = document.querySelectorAll('div')
+     const divArr = [...divs]
+     console.log(divArr) //[div, div, div]
+   </script>
+   ```
+
+### Symbol 基本使用
+
+> ES6 引入一种新的原始数据类型 Symbol， 表示独一无二的值，它是 javaScript 语言的第七种数据类型，是一种类似于字符串的数据类型。
+
+1. Symbol 特点
+
+   1.  Symbol 的值是唯一的，用来解决命名冲突的问题
+   2. Symbol 值不能与其他数据进行运算
+   3. Symbol 定义的对象属性不能使用for...in循环遍历，但是可以使用 Reflect.ownKeys 来获取对象的所有键名
+
+2. Symbol 的创建
+
+   ```js
+   //创建 Symbol
+   let s = Symbol()
+   // Symbol.for 创建
+   let s2 = Symbol.for('123')
+   
+   //原始数据类型 USONB you are so niubility
+   // U undefined
+   // S string Symbol
+   // O object
+   // N null number
+   // B boolean
+   ```
+
+3. 对象添加 Symbol 类型的属性
+
+   ```js
+   let game = {...}
+   //声明一个对象
+   let methods = {
+     up: Symbol(),
+     down: Synbol()
+   }
+   
+   game[methods.up] = function () {
+     console.log('111')
+   }
+   game[methods.down] = function () {
+     console.log('222')
+   }
+   
+   //
+   let youxi = {
+     name: "狼人杀",
+     [Symbol('say')]: function () {
+       console.log('111')
+     },
+     [Symbol('zibao')]: function () {
+       console.log('222')
+     }
+   }
+   ```
+
+### 迭代器
+
+1. 定义
+
+   > 遍历器（`Iterator`）就是一种机制。它是一种接口，为各种不同的数据结构提 供统一的访问机制。任何数据结构只要部署 `Iterator` 接口，就可以完成遍历操作。
+
+   - ES6 创造了一种新的遍历命令 `for...of` 循环，`Iterator` 接口主要供 `for...of` 消费。
+
+   - 原生具备 `iterator`接口的数据(可用for of 遍历)
+
+     - `Array`
+     - `Arguments`
+     - `Set`
+     - `Map`
+     - `String`
+     - `TypedArray`
+     - `NodeList`
+
+     ```js
+     //案例：使用 next() 方法遍历原生自带 iterator 接口的数据：
+     // 遍历 Map
+     const mp = new Map();
+     mp.set('a', 1);
+     mp.set('b', 2);
+     mp.set('c', 3);
+     let iter1 = mp[Symbol.iterator]();
+     // next() 方法每执行一次，指针自增
+     console.log(iter1.next()); // { value: [ 'a', 1 ], done: false }
+     console.log(iter1.next()); // { value: [ 'b', 2 ], done: false }
+     console.log(iter1.next()); // { value: [ 'c', 3 ], done: false }
+     console.log(iter1.next()); // { value: undefined, done: true }
+     // 遍历数组
+     let xiyou = ['唐僧','孙悟空','猪八戒','沙僧'];
+     let iter2 = xiyou[Symbol.iterator]();
+     console.log(iter2.next()); // { value: '唐僧', done: false }
+     console.log(iter2.next()); // { value: '孙悟空', done: false }
+     console.log(iter2.next()); // { value: '猪八戒', done: false }
+     console.log(iter2.next()); // { value: '沙僧', done: false }
+     ```
+
+     上面的案例只是为了证明他们自带 `iterator` 接口，实际上直接使用 `for...of` 方法遍历即可（`iterator` 接口为 `for...of`）服务。例如，可以使用 `for [k, v] of map` 来遍历 Map 数据结构中的键和值。
+
+     ```js
+     const mp = new Map();
+     mp.set('a', 1);
+     mp.set('b', 2);
+     mp.set('c', 3);
+     for (let [k, v] of mp) {
+         console.log(k, v);
+     }
+     /*
+     a 1
+     b 2
+     c 3
+     */
+     ```
+
+2. 工作原理
+
+   - 创建一个指针对象，指向当前数据结构的起始位置
+   - 第一次调用对象的 `next` 方法，指针自动指向数据结构的第一个成员
+   - 接下来不断调用 `next` 方法，指针一直往后移动，直到指向最后一个成员
+   - 每调用 `next` 方法返回一个包含 `value` 和 `done` 属性的对象
+
+   <span style='color:red'>应用场景：需要自定义遍历数据的时候，要想到迭代器。</span>
+
+3. 自定义遍历数据
+
+   我们可以通过给数据结构添加自定义 `[Symbol.iterator]()` 方法来使该数据结构能够直接被遍历，从而使 `for...of` 能够直接遍历指定数据，达到为 `for...of` 服务的功能。
+
+   ```js
+   // 需求：遍历对象中的数组
+   const xiaomi = {
+       uname: '小明',
+       course: [ '高数', '大物', '英语', '数据库' ],
+       // 通过自定义 [Symbol.iterator]() 方法
+       [Symbol.iterator]() {
+           // 初始指针对象指向数组第一个
+           let index = 0;
+           // 保存 xiaomi 的 this 值
+           let _this = this;
+           return {
+               next: function () {
+                   // 不断调用 next 方法，直到指向最后一个成员
+                   if (index < _this.course.length) {
+                       return { value: _this.course[index++], done: false };
+                   } else {
+                       // 每调用next 方法返回一个包含value 和done 属性的对象
+                       return { value: undefined, done: true };
+                   }
+               }
+           }
+       }
+   }
+   // for...of直接遍历达到目的
+   for (let v of xiaomi) {
+       console.log(v);
+   }
+   ```
+
+### Generator 生成器函数
+
+> 生成器函数是 ES6 提供的一种 **异步编程解决方案**，语法行为与传统函数完全不同。
+
+1. 生成器函数的声明和调用
+
+   - `*` 的位置没有限制
+   - 使用 `function * gen()` 和 `yield` 可以声明一个生成器函数。生成器函数返回的结果是迭代器对象，调用迭代器对象的 `next` 方法可以得到 `yield` 语句后的值。
+   - 每一个 `yield` 相当于函数的暂停标记，也可以认为是一个分隔符，每调用一次 `next()`，生成器函数就往下执行一段。
+   - `next` 方法可以传递实参，作为 `yield` 语句的返回值
+
+   ```js
+   //例如以下生成器函数中，3 个 yield 语句将函数内部分成了 4 段。
+   function* generator() {
+       console.log('before 111'); // 生成器第 1 段
+       yield 111;
+       console.log('before 222'); // 生成器第 1 段
+       yield 222;
+       console.log('before 333'); // 生成器第 1 段
+       yield 333;
+       console.log('after 333'); // 生成器第 1 段
+   }
+   let iter = generator();
+   console.log(iter.next());
+   console.log(iter.next());
+   console.log(iter.next());
+   console.log(iter.next());
+   /*
+   before 111
+   { value: 111, done: false }
+   before 222
+   { value: 222, done: false }
+   before 333
+   { value: 333, done: false }
+   after 333
+   { value: undefined, done: true }
+   */
+   ```
+
+2. 生成器函数的参数传递
+
+   ```js
+   function* generator(arg) {
+       console.log(arg); // 生成器第 1 段
+       let one = yield 111;
+       console.log(one); // 生成器第 2 段
+       let two = yield 222;
+       console.log(two); // 生成器第 3 段
+       let three = yield 333; 
+       console.log(three); // 生成器第 4 段
+   }
+   
+   let iter = generator('aaa'); // 传给生成器第 1 段
+   console.log(iter.next());
+   console.log(iter.next('bbb')); // 传给生成器第 2 段，作为这一段开始的 yield 语句返回值
+   console.log(iter.next('ccc')); // 传给生成器第 3 段，作为这一段开始的 yield 语句返回值
+   console.log(iter.next('ddd')); // 传给生成器第 4 段，作为这一段开始的 yield 语句返回值
+   /*
+   aaa
+   { value: 111, done: false }
+   bbb
+   { value: 222, done: false }
+   ccc
+   { value: 333, done: false }
+   ddd
+   { value: undefined, done: true }
+   */
+   ```
 
 
+### Promise
 
+#### 1.**Promise 的定义和使用**
 
+> `Promise` 是 ES6 引入的异步编程的新解决方案。语法上 Promise 是一个构造函数，用来封装异步操作并可以获取其成功或失败的结果。
 
- 
+一个 `Promise` 必然处于以下几种状态之一：
+
+- 待定（`pending`）：初始状态，既没有被兑现，也没有被拒绝。
+- 已兑现（`fulfilled`）：意味着操作成功完成。
+- 已拒绝（`rejected`）：意味着操作失败。
+
+`Promise` 的使用：
+
+- Promise 构造函数：`new Promise((resolve, reject)=>{})`
+- `Promise.prototype.then` 方法
+- `Promise.prototype.catch` 方法
+
+```js
+let p = new Promise(function (resolve, reject) {
+    // 使用 setTimeout 模拟请求数据库数据操作
+    setTimeout(function () {
+        // 这个异步请求数据库数据操作是否正确返回数据
+        let isRight = true;
+        if (isRight) {
+            let data = '数据库中的数据';
+            // 设置 Promise 对象的状态为操作成功
+            resolve(data);
+        } else {
+            let err = '数据读取失败！'
+            // 设置 Promise 对象的状态为操作失败
+            reject(err);
+        }
+    }, 1000);
+});
+p.then(function (value) {
+    console.log(value);
+}, function (reason) {
+    console.error(reason);
+})
+```
+
+#### 2.**Promise 封装读取文件**
+
+```js
+// 使用 nodejs 的 fs 读取文件模块
+const fs = require('fs');
+
+const p = new Promise(function (resolve, reject) {
+    fs.readFile('./resources/为学.txt', (err, data) => {
+        // err 是一个异常对象
+        if (err) reject(err);
+        resolve(data);
+    })
+})
+
+p.then(function (value) {
+    // 转为字符串输出
+    console.log(value.toString());
+}, function (reason) {
+    console.log('读取失败!!');
+})
+```
+
+#### 3.**Promise 封装 Ajax 请求**
+
+```js
+const p = new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('get', 'https://api.apiopen.top/getJoke');
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // 成功
+                resolve(xhr.response);
+            } else {
+                // 失败
+                reject(xhr.status);
+            }
+        }
+    }
+});
+
+// 指定回调
+p.then(function (value) {
+    console.log(value);
+}, function (reason) {
+    console.error(reason);
+})
+```
+
+####  4.**Promise.prototype.then 方法**
+
+##### 1.`Promise` 的三种状态：
+
+- 待定（`pending`）：初始状态，既没有被兑现，也没有被拒绝。
+- 已兑现（`fulfilled`）：意味着操作成功完成。
+- 已拒绝（`rejected`）：意味着操作失败。
+
+##### 2.`Promise.prototype.then` 
+
+> 方法返回的结果依然是 `Promise` 对象，**对象状态由回调函数的执行结果决定**。
+
+具体情况如下：
+
+1. 若 `then` 方法没有返回值，则 `then` 方法返回的对象的状态值为成功 `fulfilled`，返回结果值为 `undefined`。
+
+```js
+const p = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        // resolve('用户数据')
+        reject('出错了');
+    }, 1000);
+})
+// 未设定返回值
+const res = p.then((value) => {
+    console.log(value);
+}, (reason) => {
+    console.warn(reason);
+})
+// 打印 then 方法的返回值
+console.log(res);
+```
+
+打印的结果：
+
+![](D:\Desktop\文件\68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d332e35303475736d63346b6573302e706e67.png)
+
+2. 如果回调函数中返回的结果是非 `Promise` 类型的属性，则 `then` 方法返回的对象，其状态为成功（`fulfilled`），返回结果值取决于 `then` 方法所执行的是哪个函数（`resolve` 或 `reject`）。
+
+   ```js
+   const p = new Promise((resolve, reject) => {
+       setTimeout(() => {
+           // resolve('用户数据')
+           reject('出错了');
+       }, 1000);
+   })
+    // 返回的非 Promise 对象
+   const res = p.then((value) => {
+       console.log(value);
+       return '成功了！！';
+   }, (reason) => {
+       console.warn(reason);
+       return '出错啦！！'
+   })
+   // 打印 then 方法的返回值
+   console.log(res);
+   ```
+
+   打印结果：
+
+   ![](D:\Desktop\文件\68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d342e32786463623178386a7961302e706e67.png)
+
+3. 如果回调函数中返回的结果是 `Promise` 类型（`return new Promise()`），则 `then` 方法返回的 `Promise` 对象状态与该返回结果的状态相同，返回值也相同。
+
+   ```js
+   const p = new Promise((resolve, reject) => {
+       setTimeout(() => {
+           resolve('用户数据')
+           // reject('出错了');
+       }, 1000);
+   })
+   const res = p.then((value) => {
+       console.log(value);
+       // 返回 Promise 对象
+       return new Promise((resolve, reject) => {
+           resolve('（1）成功了！！！');
+           // reject('（1）出错了！！！')
+       })
+   }, (reason) => {
+       console.warn(reason);
+       return new Promise((resolve, reject) => {
+           // resolve('（2）成功了！！！');
+           reject('（2）出错了！！！')
+       })
+   })
+   // 打印 then 方法的返回值
+   console.log(res);
+   ```
+
+   打印结果：
+
+   ![](D:\Desktop\文件\68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d352e367a316d736d33787a7063302e706e67.png)
+
+4. 如果回调函数中返回的结果是 `throw` 语句抛出异常，则 `then` 方法的对象的状态值为 `rejected`，返回结果值为 `throw` 抛出的字面量或者 `Error` 对象。
+
+   ```js
+   const p = new Promise((resolve, reject) => {
+       setTimeout(() => {
+           resolve('用户数据');
+       }, 1000);
+   });
+   const res = p.then((value) => {
+       console.log(value);
+       return new Promise((resolve, reject) => {
+           throw new Error('错误了！！');
+       })
+   });
+   // 打印结果
+   console.log(res);
+   ```
+
+   打印结果如下：
+
+   ![](D:\Desktop\文件\68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d362e32633361696263366c3035632e706e67.png)
+
+#### 5.Promise.prototype.catch
+
+> `catch()` 方法返回一个 `Promise`，并且处理拒绝的情况。它的行为与调用 `Promise.prototype.then(undefined, onRejected)` 相同。
+
+即：`obj.catch(onRejected);`
+
+等同于：`obj.then(undefined, onRejected);`
+
+语法：
+
+```js
+p.catch(onRejected);
+
+p.catch(function(reason) {
+   // 拒绝
+});
+```
+
+举例：
+
+```js
+var p1 = new Promise(function (resolve, reject) {
+    resolve('Success');
+});
+
+p1.then(function (value) {
+    console.log(value); // "Success!"
+    throw 'oh, no!';
+}).catch(function (e) {
+    console.log(e); // "oh, no!"
+}).then(function () {
+    console.log('有 catch 捕获异常，所以这句输出');
+}, function () {
+    console.log('没有 catch 捕获异常，这句将不会输出');
+});
+
+//输出结果：
+//Success
+//oh, no!
+//有 catch 捕获异常，所以这句输出
+```
+
+### Set
+
+> ES6 提供了新的数据结构 `Set`（集合）。它类似于数组，但 **成员的值都是唯一的**，集合实现了 `iterator` 接口，所以可以使用『扩展运算符』和『`for...of`』进行遍历。
+
+1. Set 的定义和使用
+
+   ```js
+   //定义一个 Set 集合：
+   let st1 = new Set();
+   let st2 = new Set([可迭代对象]);
+   ```
+
+2. 集合（这里假设有一个集合 `st`）的属性和方法：
+
+   1. `st.size`：返回集合个数
+   2. `st.add(item)`：往集合中添加一个新元素 `item`，返回当前集合
+   3. `st.delete(item)`：删除集合中的元素，返回 `boolean` 值
+   4. `st.has(item)`：检测集合中是否包含某个元素，返回 `boolean` 值
+   5. `st.clear()`：清空集合
+   6. 集合转为数组：`[...st]`
+   7. 合并两个集合：`[...st1, ...st2]`
+
+3. 案例
+
+   ```js
+   let arr = [1,2,3,4,5,4,3,2,1]
+   //1.数组去重
+   let result = [...new Set(arr)]
+   console.log(result);
+   //2.交集
+   let arr2 = [4,5,6,5,6]
+   let result = [...new Set(arr)].filter(item => {
+     let s2 = new Set(arr2)
+     if (s2.has(item)) {
+       return true
+     } else {
+       return false
+     }
+   })
+   //或
+   let result = [...new Set(arr)].filter(item => new Set(arr2).has(item))
+   console.log(result);
+   //3.并集
+   let union = [...new Set([...arr, ...arr2])]
+   console.log(union);
+   //4.差集
+   let diff = [...new Set(arr)].filter(item => !(new Set(arr2).has(item)))
+   console.log(diff);
+   ```
+
+### Map
+
+> ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合。但是 “键” 的范围不限于字符串，各种类型的值（包括对象）都可以当作键。Map 也实现了 iterator 接口，所以可以使用『扩展运算符』和『for...of』进行遍历。
+
+1. 定义一个 Map：
+
+   ```js
+   let mp1 = new Map();
+   mp1.set('aaa', 111);
+   mp1.set('bbb', 222);
+   mp1.set('ccc', 333);
+   
+   let mp2 = new Map([
+       ['aaa', 111],
+       ['bbb', 222],
+       ['ccc', 333]
+   ]);
+   
+   console.log(mp1['aaa']); // 111
+   console.log(mp2.get('bbb')); // 222
+   ```
+
+2. Map 的属性和方法：（`k` 为键，`v`为值）
+   - `size`：返回 Map 的元素（键值对）个数
+   - `set(k, v)`：增加一个键值对，返回当前 Map
+   - `get(k)`：返回键值对的键值
+   - `has()`：检测 Map 中是否包含某个元素
+   - `clear()`：清空集合，返回 `undefined`
+
+### class 类
+
+> ES6 提供了更接近传统语言的写法，引入了 Class（类）这个概念，作为对象的模板。通过class 关键字，可以定义类。基本上，ES6 的 `class` 可以看作只是一个语法糖，它的绝大部分功能，ES5 都可以做到，新的 `class` 写法只是让对象原型的写法更加清晰、更像面向对象编程的语法而已。
+
+#### 1.**创建类和对象**
+
+1. 语法：
+
+   ```js
+   class ClassName {
+       // class body
+   }
+   ```
+
+2. 创建实例：
+
+   ```js
+   let obj = new ClassName();
+   ```
+
+3. <span style="color:red;font-size:16px">注意：类必须使用 `new` 实例化对象</span>
+
+#### 2.**static 静态成员**
+
+给成员属性或成员方法添加 `static`，该成员就成为静态成员，静态成员只能由该类调用。
+
+```js
+class Person {
+    static eat() {
+        console.log('eat');
+    }
+}
+let  p = new Person();
+Person.eat(); // eat
+p.eat(); // 报错
+```
+
+##### 1.**extends 类继承和方法的重写**
+
+> ES6 中直接使用 `extends` 语法糖（更简洁高级的实现方式）来实现继承，同时可以重写父类的方法，直接在子类中重新写一次要重写的方法即可覆盖父类方法。
+
+```js
+class Phone{
+    //构造方法
+    constructor(brand, price){
+        this.brand = brand;
+        this.price = price;
+    }
+    //父类的成员属性
+    call(){
+        console.log("我可以打电话!!");
+    }
+}
+
+class SmartPhone extends Phone {
+    //构造方法
+    constructor(brand, price, color, size){
+        super(brand, price);// Phone.call(this, brand, price)
+        this.color = color;
+        this.size = size;
+    }
+
+    photo(){
+        console.log("拍照");
+    }
+
+    // 方法的重写
+    call(){
+        console.log('我可以进行视频通话');
+    }
+}
+
+const xiaomi = new SmartPhone('小米',799,'黑色','4.7inch');
+xiaomi.call();
+xiaomi.photo();
+```
+
+##### 2.**getter 和 setter**
+
+> 当属性拥有 `get`/`set` 特性时，属性就是访问器属性。代表着在访问属性或者写入属性值时，对返回值做附加的操作。而这个操作就是 `getter`/`setter` 函数。
+
+1. 使用场景： `getter` 是一种语法，这种 `get` 将对象属性绑定到 **查询该属性时将被调用的函数**。适用于某个需要动态计算的成员属性值的获取。`setter` 则是在修改某一属性时所给出的相关提示。
+
+   ```js
+   class Test {
+       constructor(log) {
+           this.log = log;
+       }
+       get latest() {
+           console.log('latest 被调用了');
+           return this.log;
+       }
+       set latest(e) {
+           console.log('latest 被修改了');
+           this.log.push(e);
+       }
+   }
+   
+   let test = new Test(['a', 'b', 'c']);
+   // 每次 log 被修改都会给出提示
+   test.latest = 'd';
+   // 每次获取 log 的最后一个元素 latest，都能得到最新数据。
+   console.log(test.latest);
+   ```
+
+2. 以上输出：
+
+   ```js
+   latest 被修改了
+   latest 被调用了
+   [ 'a', 'b', 'c', 'd' ]
+   ```
+
+### 数值扩展
+
+1. `Number.EPSILON` 是 JavaScript 表示的最小精度，一般用来处理浮点数运算。例如可以用于两个浮点数的比较。
+
+   ```js
+   let equal = (x, y) => Math.abs(x - y) < Number.EPSILON;
+   console.log(0.1 + 0.2 === 0.3); // false
+   console.log(equal(0.1 + 0.2, 0.3)); // true
+   ```
+
+2. 二进制和八进制：二进制以 `0b` 开头，八进制以 `0o` 开头。
+
+   ```js
+   let b = 0b1010;
+   let o = 0o777;
+   let d = 100;
+   let x = 0xff;
+   console.log(x);
+   ```
+
+3. `Number.isFinite` 检测一个数值是否为有限数。
+
+   ```js
+   console.log(Number.isFinite(100)); // false
+   console.log(Number.isFinite(100 / 0)); // true
+   console.log(Number.isFinite(Infinity)); // false
+   ```
+
+4. Number.parseInt 和 Number.parseFloat
+   >ES6 给 `Number` 添加了 `parseInt` 方法，`Number.parseInt` 完全等同于 `parseInt`。将字符串转为整数，或者进行进制转换。`Number.parseFloat` 则等同于 `parseFloat()`
+
+   ```js
+   Number.parseInt === parseInt; // true
+   Number.parseFloat === parseFloat; // true
+   ```
+
+   ```js
+   Number.parseInt(s, base);
+   ```
+
+   - `s`：待转换的字符串
+   - `base`：进位制的基数
+
+   ```js
+   console.log(Number.parseInt('5211314love')); // 5211314
+   console.log(Number.parseFloat('3.1415926神奇')); // 3.1415926
+   ```
+
+5. `Number.isInteger()` 判断一个数是否为整数。
+
+   ```js
+   console.log(Number.isInteger(5)); // true
+   console.log(Number.isInteger(2.5)); // false
+   ```
+
+6. `Math.trunc()` 将数字的小数部分抹掉。
+
+   ```js
+   console.log(Math.trunc(3.5)); // 3
+   ```
+
+7. `Math.sign` 判断一个数到底为正数 负数 还是零
+
+### 对象方法扩展
+
+> ES6 新增了一些 `Object` 对象的方法。
+
+1. Object.is()
+
+   1. `Object.is()` 方法判断两个值是否完全相同。`Object.is` 比较两个值是否严格相等，与 `===` 行为 **基本一致**。返回一个 `Boolean` 类型。
+
+      ```js
+      Object.is(value1, value2);
+      ```
+
+   2. `Object.is()` 方法判断两个值是否为同一个值。如果满足以下条件则两个值相等：
+
+      - 都是 `undefined`
+      - 都是 `null`
+      - 都是 `true` 或 `false`
+      - 都是相同长度的字符串且相同字符按相同顺序排列
+      - 都是相同对象（意味着每个对象有同一个引用）
+      - 都是数字且
+        - 都是 `+0`
+        - 都是 `-0`
+        - 都是 `NaN`
+        - 或都是非零而且非 `NaN` 且为同一个值
+
+      与 `==` 运算不同。 `==` 运算符在判断相等前对两边的变量（如果它们不是同一类型）进行强制转换 (这种行为的结果会将 `"" == false` 判断为 `true`)，而 `Object.is` 不会强制转换两边的值。
+
+      与 `===`算也不相同。 === 运算符 (也包括 `==` 运算符) 将数字 `-0` 和 `+0` 视为相等，而将 `Number.NaN` 与 `NaN` 视为不相等。
+
+2.  Object.assign
+
+   `Object.assign` 对象的合并，相当于浅拷贝。
+
+   ```js
+   const config1 = {
+       host: 'localhost',
+       port: 3306,
+       name: 'root',
+       pass: 'root',
+       test: 'test'
+   };
+   const config2 = {
+       host: 'http://atguigu.com',
+       port: 33060,
+       name: 'atguigu.com',
+       pass: 'iloveyou',
+       test2: 'test2'
+   }
+   console.log(Object.assign(config1, config2));
+   ```
+
+3. Object.setPrototypeOf 和 Object.getPrototypeof
+
+   `Object.setPrototypeOf` 用于设置对象的原型对象，`Object.getPrototypeof` 用于获取对象的原型对象，相当于 `__proto__`。
+
+   ```js
+   const school = {
+       name: '尚硅谷'
+   }
+   const cities = {
+       xiaoqu: ['北京','上海','深圳']
+   }
+   Object.setPrototypeOf(school, cities);
+   console.log(Object.getPrototypeOf(school));
+   console.log(school);
+   ```
+   
+
+### ES6 模块化
+
+> 模块化是指将一个大的程序文件，拆分成许多小的文件，然后将小文件组合起来。
+
+####1.模块化的好处
+
+模块化的优势有以下几点：
+
+- 防止命名冲突
+
+- 代码复用
+
+- 高维护性
+
+####2.ES6 之前的模块化规范有：
+
+- CommonJS => NodeJS、Browserify
+- AMD => requireJS
+- CMD => seaJS
+
+####3.ES6 模块化语法
+
+1. 模块功能主要由两个命令构成：`export` 和 `import`。
+
+   1. `export` 命令用于规定模块的对外接口
+   2. `import` 命令用于输入其他模块提供的功能
+
+2. 模块导出数据语法
+
+   1. 单个导出
+
+      ```js
+      // 单个导出
+      export let uname = 'Rick';
+      export let sayHello = function () {
+          console.log('Hi, bro!');
+      }
+      ```
+
+   2. 合并导出
+
+      ```js
+      let uname = 'Rick';
+      let sayHello = function () {
+          console.log('Hi, bro!');
+      }
+      // 合并导出
+      export { uname, sayHello };
+      ```
+
+   3. 默认导出
+
+      ```js
+      // 默认导出
+      export default {
+          uname: 'Rick',
+          sayHello: function () {
+              console.log('Hi, bro!');
+          }
+      }
+      ```
+
+3. 模块导入数据语法
+
+   1. 通用导入方式
+
+      ```js
+      import * as m1 from './js/m1.js';
+      import * as m2 from './js/m2.js';
+      import * as m3 from './js/m3.js';
+      ```
+
+   2. 解构赋值导入
+
+      ```js
+      import { uname, sayHello } from './js/m1.js';
+      // 有重复名可以设置别名
+      import { uname as uname2, sayHello as sayHello2 } from './js/m2.js';
+      console.log(uname);
+      // 配合默认导出
+      import {default as m3} from "./src/js/m3.js";
+      ```
+
+   3. 简便方式导入，针对默认暴露
+
+      ```js
+      import m3 from "./src/js/m3.js";
+      ```
+
+   4. ES6 使用模块化方式二
+
+      将文件导入都写进一个 app.js 文件中，然后在里面写入要导入的模块。app.js 中的内容如下：
+
+      ```js
+      import * as m1 from './js/m1.js';
+      import * as m2 from './js/m2.js';
+      import * as m3 from './js/m3.js';
+      
+      console.log(m1);
+      console.log(m2);
+      console.log(m3);
+      ```
+
+      在 index.html 中引入 app.js 文件内容：
+
+      ```js
+      <script src="./app.js" type="module"></script>
+      ```
+
+####4.使用 babel 对模块化代码转换
+
+有的浏览器不支持 ES6 语法，这时候就需要使用 babel 来将其转换成 ES5 等价语法。
+
+1. 安装工具
+
+```node
+npm i babel-cli babel-preset-env browserify(webpack) -D
+```
+
+2. 编译
+
+```node
+npx babel src/js -d dist/js --presets=babel-preset-env
+```
+
+3. 打包
+
+```node
+npx browserify dist/js/app.js -o dist/bundle.js
+```
+
+#### 5.ES6 模块化引入 npm 安装的包
+
+```
+npm install jquery
+```
+
+再通过 `import` 导入即可。
+
+ [![es6-7](https://camo.githubusercontent.com/e30c97d96497fbc4d5e9f23e587bd1ad594c1e7b218e1bb38640bfa200fcad46/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d372e323136696f6d647378396d6f2e706e67)](https://camo.githubusercontent.com/e30c97d96497fbc4d5e9f23e587bd1ad594c1e7b218e1bb38640bfa200fcad46/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d372e323136696f6d647378396d6f2e706e67)
