@@ -1,4 +1,4 @@
-[TOC]
+
 
 
 
@@ -2473,3 +2473,545 @@ npm install jquery
 再通过 `import` 导入即可。
 
  [![es6-7](https://camo.githubusercontent.com/e30c97d96497fbc4d5e9f23e587bd1ad594c1e7b218e1bb38640bfa200fcad46/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d372e323136696f6d647378396d6f2e706e67)](https://camo.githubusercontent.com/e30c97d96497fbc4d5e9f23e587bd1ad594c1e7b218e1bb38640bfa200fcad46/68747470733a2f2f63646e2e6a7364656c6976722e6e65742f67682f4861636b65722d432f506963747572652d426564406d61696e2f646f63732f6573362d372e323136696f6d647378396d6f2e706e67)
+
+
+
+## ES7
+
+### 1.Array.prototype.includes
+
+`includes` 方法用来检测数组中是否包含某个元素，返回布尔类型值。
+
+### 2. 指数运算符
+
+在 ES7 中引入指数运算符 `**`，用来实现幂运算，功能与 `Math.pow(a, b)` 结果相同。
+
+```js
+2 ** 3 // 8
+Math.pow(2, 3) // 8
+```
+
+## ES8
+
+### 1.async 和 await
+
+> `async` 和 `await` 两种语法结合可以让异步代码像同步代码一样。（即：看起来是同步的，实质上是异步的。）
+
+#### 1.async
+
+1. `async` 声明（`function`）的函数成为 async 函数，语法：
+
+   ```js
+   async function funcName() {
+       //statements 
+   }
+   ```
+
+2. `async` 内部可以使用 `await`，也可以不使用。 `async` 函数的返回值是一个 `Promise` 对象，因此执行这个函数时，可以使用 `then` 和 `catch` 方法。 根据 **函数体内部** 的返回值， `async` 函数返回值具体情况如下：
+
+   - 函数体内不返回任何值，则 `async` 函数返回值为一个成功（`fulfilled`）的 `Promise` 对象，状态值为 `undefined`。
+
+     ```js
+     let a = async function() {}
+     let res = a()
+     console.log(res)
+     // Promise{<fullfilled>: undefined}
+     ```
+
+   - 返回结果不是一个 `Promise` ，则 `async` 函数返回值为一个成功（`fulfilled`）的 `Promise` 对象，状态值为这个内部返回值。
+
+     ```js
+     let a = async function () {
+       return 'hello'
+     }
+     let res = a()
+     console.log(res) 
+     // Promise{<fullfilled>: 'hello'}
+     ```
+
+   - 内部抛出错误，则 `async` 函数返回值为一个失败的 `Promise` 对象。
+
+     ```js
+     let a = async function foo() {
+       throw new Error('出错了')
+     }
+     a().catch(reason => {
+       console.log(reason)
+     })
+     ```
+
+   - 若函数内部返回值是一个 `Promise` 对象，则 `async` 函数返回值的状态取决于这个 `Promise` 对象。
+
+     ```js
+     let a = async function () {
+       return new Promise((resolve, reject) => {
+         resolve("成功")
+       })
+     }
+     a().then(value => {
+       console.log(value)
+     })
+     ```
+
+#### 2.await
+
+> `await` 相当于一个运算符，右边接一个值。一般为一个 `Promise` 对象，也可以是一个非 `Promise` 类型。当右接一个非 `Promise` 类型，`await` 表达式返回的值就是这个值；当右接一个 `Promise` 对象，则 `await` 表达式会阻塞后面的代码，等待当前 `Promise` 对象 `resolve` 的值。
+
+> `await` 必须结合 `async` 使用，而 `async` 则不一定需要 `await`。 `async` 会将其后的函数的返回值封装成一个 `Promise` 对象，而 `await` 会等待这个 `Promise` 完成，然后返回 `resolve` 的结果。当这个 `Promise` 失败或者抛出异常时，需要时使用 `try-catch` 捕获处理。
+
+`Promise` 使用链式调用解决了传统方式回调地狱的问题，而 `async-await` 又进一步优化了代码的可读性。
+
+```js
+const p = new Promise((resolve, reject)=>{
+  resolve('成功')
+})
+async function main() {
+  let res = await p
+  console.log(res)
+}
+main()
+// '成功'
+	
+const p = new Promise((resolve, reject)=>{
+  reject('失败')
+})
+async function main() {
+  try {
+    let res = await p
+    console.log(res)
+  } catch(e) {
+    console.log(e)
+  }
+}
+main()
+// '失败'
+```
+
+###  2.Object.values 和 Object.entries
+
+``Object.values()``方法返回一个给定对象的所有可枚举属性值的数组，类似于``Object.keys()``，只是前者返回属性值，后者返回键值组合的数组。
+
+  ```
+  let obj = {
+    a: 1,
+    b: {1:2},
+    c: [1,2,3]
+  }
+  console.log(Object.values(obj))
+  // [1, {1: 2}, [1,2,3]]
+  console.log(Object.keys(obj))
+  // ['a', 'b', 'c']
+  ```
+
+``Object.entries()``方法返回一个给定对象自身可遍历属性``[key,value]``的数组（数组元素也是一个个的数组的数组）
+
+  ```
+  const obj = {a: 1, b: 2, c: 3};
+  console.log(Object.entries(obj))
+  // [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ]
+  ```
+
+返回的是一个数组，这样就可以使用``for...of``遍历了。
+
+  ```
+  const obj = { a: 1, b: 2, c: 3 };
+  for (let [k, v] of Object.entries(obj)) {
+    console.log(k, v)
+  }
+  ```
+
+## ES9
+
+### 1.rest 参数
+
+> `Rest` 参数与`spread` 扩展运算符在 ES6 中已经引入, 不过 ES6 中只针对于数组,在 ES9 中为对象提供了像数组一样的 `Rest` 参数和扩展运算符
+
+```js
+function connect({ host, port, ...user }) {
+  console.log(host); // 127.0.0.1
+  console.log(port); // 3306
+  console.log(user); //{username: 'root', password: 'root', type: 'master'}
+}
+
+connect({
+  host: '127.0.0.1',
+  port: 3306,
+  username: 'root',
+  password: 'root',
+  type: 'master'
+})
+
+const skillOne = {
+  q: '天音波'
+}
+const skillTow = {
+  e: '天音波'
+}
+const skillThree = {
+  w: '天音波'
+}
+const skillFour = {
+  r: '天音波'
+}
+
+const mangseng = {...skillOne,...skillTow,...skillThree,...skillFour}
+console.log(mangseng); //{q: '天音波', e: '天音波', w: '天音波', r: '天音波'}
+```
+
+### 2.正则扩展
+
+1. 命名捕获分组
+
+   ```js
+   let str = '<a href="http://www.gaoxingyu.com">哈哈哈</a>'
+   const reg = /<a href="(?<url>.*)">(?<text>.*)<\/a>/
+   const result = reg.exec(str)
+   console.log(result);
+   
+   // 0: "<a href=\"http://www.gaoxingyu.com\">哈哈哈</a>"
+   // 1: "http://www.gaoxingyu.com"
+   // 2: "哈哈哈"
+   // groups:
+   // url: "http://www.gaoxingyu.com"
+   // text: "哈哈哈"
+   // index: 0
+   // input: "<a href=\"http://www.gaoxingyu.com\">哈哈哈</a>"
+   ```
+
+2. 反向断言
+
+   ```js
+   //声明字符串
+       let str = 'JS5211314你知道吗999啦啦啦'
+       正向断言
+       const reg = /\d+(?=啦)/
+       const result = reg.exec(str)
+       console.log(result); //['999', index: 13, input: 'JS5211314你知道吗999啦啦啦', groups: undefined]
+   
+       //反向断言
+   
+       const reg = /(?<=吗)\d+/
+       const result = reg.exec(str)
+       console.log(result); //['999', index: 13, input: 'JS5211314你知道吗999啦啦啦', groups: undefined]
+   ```
+
+3. dotAll模式
+
+   ```js
+   //声明正则
+   const reg = /<li>.*?<a>(.*?)<\/a>.*?<p>(.*?)<\/p>/gs
+   //执行匹配
+   let result
+   let data = []
+   while (result = reg.exec(str)) {
+     console.log(result);
+     data.push({title:result[1],time:result[2]})
+   }
+   
+   //输出结果
+   console.log(data);
+   // 0:
+   // time: "上映日期：1994-09-10"
+   // title: "肖生客的救赎"
+   // [[Prototype]]: Object
+   // 1:
+   // time: "上映日期：1994-07-06"
+   // title: "阿甘正传"
+   // [[Prototype]]: Object
+   // length: 2
+   ```
+
+## ES10
+
+### 1.Object.fromEntries
+
+> Object.fromEntries() 方法把可迭代对象的键值对列表转换为一个对象。
+
+语法：
+
+```js
+Object.fromEntries(iterable)
+```
+
+- `iterable`：类似 Array 、 Map 或者其它实现了可迭代协议的可迭代对象。
+
+- 返回值：一个由该迭代对象条目提供对应属性的新对象。
+
+- 相当于 `Object.entries` （ES8）的逆运算。
+
+  ```js
+  const mp = new Map([
+    [1, 2],
+    [3, 4]
+  ])
+  const obj = Object.fromEntries(mp)
+  console.log(obj)
+  // { '1': 2, '3': 4 }
+  
+  const arr = [[1, 2]]
+  console.log(Object.fromEntries(arr))
+  // {'1': 2}
+  ```
+
+### 2.trimStart() 和 trimEnd()
+
+- `trimStart()` 去除字符串开头连续的空格（`trimLeft` 是此方法的别名）
+- `trimEnd()` 去除字符串末尾连续的空格（`trimRight` 是此方法的别名）
+
+### 3.Array.prototype.flat 和 Array.prototype.flatMap
+
+1. `Array.prototype.flat(i)`：展平一个多维数，`i` 为要展开的层数，默认为1，即展开一层。
+
+   ```js
+   let arr1 = [1, 2, [3, [4, 5]]]
+   console.log(arr1.flat(1)) 
+   // [1,2,3,[4,5]
+   let arr2 = [1, [2, 3, [4, 5]]]
+   console.log(arr2.flat(2))
+   // [1,2,3,4,5]
+   ```
+
+   使用 `Infinity` 作为深度，展开任意深度的嵌套数组
+
+   ```js
+   [1, [2, 3, [4, 5]]].flat(Infinity)
+   // [1, 2, 3, 4, 5, 6]
+   ```
+
+   也可以使用 `flat` 来去除数组空项
+
+   ```js
+   let arr = [1,2,3,,4]
+   arr.flat() // [1,2,3,4]
+   ```
+
+2. `Array.prototype.flatMap`：相当于 `map` 和 `flat` 的结合，方法首先使用映射函数映射每个元素，然后将结果压缩成一个新数组。
+
+   ```js
+   let arr = [1,2,3,4]
+   let res1 = arr.map(x => [x ** 2])
+   console.log(res1)
+   // [[1],[4],[9],[16]]
+   let res2 = arr.flatMap(x => [x ** 2])
+   console.log(res2)
+   // [1,4,9,16]
+   ```
+
+### 4.Symbol.prototype.description
+
+使用 `Symbol()` 创建的 `Symbol` 字面量，可以直接使用 `description` 获取该字面量的描述。
+
+```js
+let sym = Symbol('hello')
+console.log(sym.description)
+// hello
+```
+
+## ES11
+
+### 1.类的私有属性
+
+> ES11 提供了类的私有属性，在类的外部无法访问该属性。只有再类的内部能访问。
+
+```js
+class Person{
+  //公有属性
+  name;
+  //私有属性
+  #age;
+  #weight;
+  //构造方法
+  constructor(name, age, weight){
+    this.name = name;
+    this.#age = age;
+    this.#weight = weight;
+  }
+
+  intro(){
+    console.log(this.name);
+    console.log(this.#age);
+    console.log(this.#weight);
+  }
+}
+
+//实例化
+const girl = new Person('晓红', 18, '45kg');
+
+// 外部无法直接访问
+// console.log(girl.name);
+// console.log(girl.#age);
+// console.log(girl.#weight);
+
+girl.intro();
+```
+
+### 2.allSettled
+
+> 该 `Promise.allSettled()` 方法返回一个在所有给定的 `promise` 都已经 `fulfilled` 或 `rejected` 后的 `promise`，并带有一个对象数组，每个对象表示对应的 `promise` 结果。`allSettled` 方法返回的 `Promise` 对象始终是成功（`fulfilled`）的。
+
+使用场景：
+
+- 有多个彼此不依赖的异步任务成功完成时使用。
+- 想得到每个 `promise` 的结果时使用。
+
+对比于 `Promise.all()`，`all()` 也接受一个 `Promise` 对象数组参数，只要有一个失败（`rejected`），那么返回的 `Promise` 对象就是失败（`rejected`）的。
+使用场景：
+
+- 传进去的 `Promise` 对象彼此依赖，且需要在其中任何一个失败的时候停止。
+
+两个 `Promise` 都是成功的情况：
+
+```js
+let p1 = new Promise((resolve, reject) => {
+  resolve('用户数据-1')
+})
+
+let p2 = new Promise((resolve, reject) => {
+  resolve('订单数据-2')
+})
+
+let res1 = Promise.allSettled([p1, p2])
+let res2 = Promise.all([p1, p2])
+console.log(res1)
+console.log(res2)
+```
+
+输出结果： ![es11-1](https://cdn.jsdelivr.net/gh/Hacker-C/Picture-Bed@main/docs/es11-1.2fgw7vvkb0kk.png)
+
+一个成功，一个失败：
+
+```js
+let p1 = new Promise((resolve, reject) => {
+  resolve('用户数据-1')
+})
+
+let p2 = new Promise((resolve, reject) => {
+  reject('失败了')
+})
+
+let res1 = Promise.allSettled([p1, p2])
+let res2 = Promise.all([p1, p2])
+console.log(res1)
+console.log(res2)Copy to clipboardErrorCopied
+```
+
+打印结果： ![ES11-2](https://cdn.jsdelivr.net/gh/Hacker-C/Picture-Bed@main/docs/ES11-2.17q27y7sy9mk.png)
+
+### 3.matchAll
+
+> `matchAll()` 方法返回一个包含所有匹配正则表达式的结果及分组捕获组的迭代器。
+
+```js
+const regexp = /t(e)(st(\d?))/g;
+const str = 'test1test2';
+
+const array = [...str.matchAll(regexp)];
+
+console.log(array[0]);
+// expected output: Array ["test1", "e", "st1", "1"]
+
+console.log(array[1]);
+// expected output: Array ["test2", "e", "st2", "2"]
+```
+
+### 4.可选链
+
+1. 定义
+
+   > 可选链 `?.` 是一种访问嵌套对象属性的安全的方式。即使中间的属性不存在，也不会出现错误。
+   
+   原则：如果可选链 `?.` 前面的部分是 `undefined` 或者 `null`，它会停止运算并返回该部分。
+
+   ```js
+   let user = {
+     address: {
+     }
+   }
+   console.log( user?.address?.street ); // undefined（不报错）
+   ```
+
+2. 短路效应
+
+   > 短路效应：正如前面所说的，如果 `?.` 左边部分不存在，就会立即停止运算（“短路效应”）。所以，如果后面有任何函数调用或者副作用，它们均不会执行。
+   
+   这有和 `&&` 的作用类似，但上述改用 `&&` 会显得代码冗余度高：
+
+   ```js
+   console.log(user && user.address && user.address.street)
+   ```
+   
+3. 其它变体：?.()，?.[]
+
+   > 可选链 `?.` 不是一个运算符，而是一个特殊的语法结构。它还 **可以与函数和方括号一起使用**。
+
+   例如，将 `?.()` 用于调用一个可能不存在的函数（即使不存在也不报错）。
+
+   ```js
+   function foo() {
+     console.log('hello')
+   }
+   foo?.()
+   // helloCopy to clipboardErrorCopied
+   ```
+
+   `?.[]` 允许从一个可能不存在的对象上安全地读取属性。（即使不存在也不报错）。
+
+   ```js
+   let obj = {
+     key: 123
+   }
+   console.log(obj?.['key'])
+   // 123
+   ```
+   
+
+### 5.动态 import 导入
+
+```js
+const btn = document.getElementById('btn');
+
+btn.onclick = function(){
+  import('./hello.js').then(module => {
+    module.hello();
+}
+```
+
+### 6.BigInt
+
+> `BigInt` 是一种特殊的数字类型，它提供了对任意长度整数的支持。
+
+创建 `bigint` 的方式有两种：在一个整数字面量后面加 `n` 或者调用 `BigInt` 函数，该函数从字符串、数字等中生成 `bigint`。
+
+```js
+let n1 = 123n
+let n2 = 456n
+let n3 = BigInt(789)
+console.log(typeof n1) // bigint
+console.log(n1+n2) // 579n
+console.log(n2+n3) // 1245n
+```
+
+比较运算符：
+
+- 例如 
+
+  ``<``和 ``>``，使用它们来对``bigint``和 nu`mber 类型的数字进行比较没有问题：
+
+  ```js
+  alert( 2n > 1n ); // true
+  alert( 2n > 1 ); // trueCopy to clipboardErrorCopied
+  ```
+
+- 但是请注意，由于``number``和``bigint``属于不同类型，它们可能在进行``==``比较时相等，但在进行``===``（严格相等）比较时不相等：
+
+  ```js
+  alert( 1 == 1n ); // true
+  alert( 1 === 1n ); // false
+  ```
+
+### 7.globalThis
+
+> 全局对象提供可在任何地方使用的变量和函数。默认情况下，这些全局变量内置于语言或环境中。
+> 在浏览器中，它的名字是 `window`，对 Node.js 而言，它的名字是 `global`，其它环境可能用的是别的名字。
+> ES11中 `globalThis` 被作为全局对象的标准名称加入到了 JavaScript 中，所有环境都应该支持该名称。所有主流浏览器都支持它。
+> 使用场景： 假设我们的环境是浏览器，我们将使用 `window`。如果你的脚本可能会用来在其他环境中运行，则最好使用 `globalThis`。
