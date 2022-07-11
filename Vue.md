@@ -421,7 +421,7 @@
 
 5. **常用的生命周期钩子**：
 
-   1. .mounted: 发送ajax请求、启动定时器、绑定自定义事件、订阅消息等【初始化操作】。
+   1. mounted: 发送ajax请求、启动定时器、绑定自定义事件、订阅消息等【初始化操作】。
    2. beforeDestroy: 清除定时器、解绑自定义事件、取消订阅消息等【收尾工作】。
 
 6. **关于销毁Vue实例**
@@ -1028,7 +1028,8 @@ module.exports = {
 
 ### 1.**概念**
 
-​		在Vue中实现集中式状态（数据）管理的一个Vue插件，对vue应用中多个组件的共享状态进行集中式的管理（读/写），也是一种组件间通信的方式，且适用于任意组件间通信。
+> 在Vue中实现集中式状态（数据）管理的一个Vue插件，对vue应用中多个组件的共享状态进行集中式的管理（读/写），也是一种组件间通信的方式，且适用于任意组件间通信。
+>
 
 ### 2.**何时使用**？
 
@@ -1964,6 +1965,23 @@ npm run dev
 ### 8.生命周期
 
 <div style="border:1px solid black;width:380px;float:left;margin-right:20px;"><strong>vue2.x的生命周期</strong><img src="https://cn.vuejs.org/images/lifecycle.png" alt="lifecycle_2" style="zoom:33%;width:1200px" /></div><div style="border:1px solid black;width:510px;height:985px;float:left"><strong>vue3.0的生命周期</strong><img src="https://v3.cn.vuejs.org/images/lifecycle.svg" alt="lifecycle_2" style="zoom:33%;width:2500px" /></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
