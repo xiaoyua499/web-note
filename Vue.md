@@ -2374,4 +2374,60 @@ npm run dev
 
   > 过滤器虽然这看起来很方便，但它需要一个自定义语法，打破大括号内表达式是 “只是 JavaScript” 的假设，这不仅有学习成本，而且有实现成本！建议用方法调用或计算属性去替换过滤器。
 
-- ......
+- **vuex用法的改变**
+
+  store.js
+
+  ```js
+  //vue2
+  import Vue from "vue";
+  import Vuex from "vuex";
+  Vue.use(Vuex);
+  const store = new Vuex.Store({
+    state: {},
+  });
+  export default store;
+  
+  //vue3
+  import { createStore } from "vuex";
+  const store = createStore({
+    state: {},
+  });
+  export default store;
+  ```
+  
+  main.js
+  
+  ```js
+  //vue2
+  // 页面路径：main.js
+  import Vue from 'vue'
+  import App from './App'
+  import store from './store'
+  
+  Vue.prototype.$store = store
+  
+  // 把 store 对象提供给 “store” 选项，这可以把 store 的实例注入所有的子组件
+  const app = new Vue({
+  	store,
+  	...App
+  })
+  app.$mount()
+  
+  //vue3
+  // 页面路径：main.js 
+  import App from './App'
+  import store from './store'
+  import {createSSRApp} from 'vue'
+  export function createApp() {
+  	const app = createSSRApp(App)
+  	app.use(store)
+  	return {
+  		app
+  	}
+  }
+  ```
+  
+  
+  
+  ​																
