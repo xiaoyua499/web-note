@@ -417,7 +417,16 @@
 
 4. 生命周期函数中的this指向是vm 或 组件实例对象. 
 
-   ![](D:\Desktop\Web\Vue2+Vue3\资料（含课件）\02_原理图\生命周期.png)
+   将要创建-->调用`beforeCreate`函数。
+   创建完毕-->调用`created`函数。
+   将要挂载-->调用`beforeMount`函数。
+   **挂载完毕-->调用`mountedi`函数。-->【重要的钩子】**
+   将要更新-->调用`beforeUpdate`函数。
+   更新完毕-->调用`updatedi`函数。
+   **将要销毁-->调用`peforeDestroy`函数。-->【重要的钩子】**
+   销毁完毕-->调用`destroyedi`函数。
+
+   <img src="https://fastly.jsdelivr.net/gh/xiaoyua499/imageBox@main/1660106697536%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png" style="zoom: 50%;" />
 
 5. **常用的生命周期钩子**：
 
