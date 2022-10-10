@@ -669,7 +669,7 @@
 
    `axios.post('url', { /*参数*/ }).then(callback)`
 
-4. **直接使用axios发起请求**\
+4. **直接使用axios发起请求**
 
    ```javascript
    axios({

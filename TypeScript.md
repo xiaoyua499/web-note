@@ -1,1111 +1,127 @@
 # TypeScript
 
-## 1、TypeScript简介
+## 一、TypeScript介绍
 
-1. TypeScript是JavaScript的超集。
-2. 它对JS进行了扩展，向JS中引入了类型的概念，并添加了许多新的特性。
-3. TS代码需要通过编译器编译为JS，然后再交由JS解析器执行。
-4. TS完全兼容JS，换言之，任何的JS代码都可以直接当成JS使用。
-5. 相较于JS而言，TS拥有了静态类型，更加严格的语法，更强大的功能；TS可以在代码执行前就完成代码的检查，减小了运行时异常的出现的几率；TS代码可以编译为任意版本的JS代码，可有效解决不同JS运行环境的兼容问题；同样的功能，TS的代码量要大于JS，但由于TS的代码结构更加清晰，变量类型更加明确，在后期代码的维护中TS却远远胜于JS。
+### 1.1 什么是TypeScript
 
+> 在引入编程社区 20 多年后，JavaScript 现在已成为有史以来应用最广泛的跨平台语言之一。JavaScript 最初是一种用于向网页添加微不足道的交互性的小型脚本语言，现已发展成为各种规模的前端和后端应 用程序的首选语言。虽然用 JavaScript 编写的程序的大小、范围和复杂性呈指数级增长，但 JavaScript 语言表达不同代码单元之间关系的能力却没有。结合 JavaScript 相当奇特的运行时语义，语言和程序复 杂性之间的这种不匹配使得 JavaScript 开发成为一项难以大规模管理的任务.
 
+> 程序员编写的最常见的错误类型可以描述为类型错误：在预期不同类型的值的地方使用了某种类型的 值。这可能是由于简单的拼写错误、无法理解库的 API 表面、对运行时行为的错误假设或其他错误。 TypeScript 的目标是成为 JavaScript 程序的静态类型检查器——换句话说，是一个在代码运行之前运行 的工具（静态）并确保程序的类型正确（类型检查）。
 
-## 2、TypeScript 开发环境搭建
+> TypeScript 是一种由微软开发的自由和开源的编程语言。它是 JavaScript 的一个超集，而且本质上向这 个语言添加了可选的静态类型和基于类的面向对象编程。
 
-### 1.下载Node.js
+> TypeScript 是一种非常受欢迎的 JavaScript 语言扩展。它在现有的 JavaScript 语法之上加入了一层类型 层，而这一层即使被删除，也丝毫不会影响运行时的原有表现。许多人认为 TypeScript "只是一个编译 器"，但更好的理解其实是把 TypeScript 看作两个独立的系统：编译器（即处理语法的部分）和语言工 具（即处理与编辑器集成的部分）。通过独立看待这两个系统，就可以得到能够解释我们之前所做决策 的两个重要视角。
 
-- 64位：https://nodejs.org/dist/v14.15.1/node-v14.15.1-x64.msi
-- 32位：https://nodejs.org/dist/v14.15.1/node-v14.15.1-x86.msi
+> 在 npm[3] 上，TypeScript 的下载量每年都在翻倍。截止2021 年 12 月 1 日，它的每周下载量超过为 2200 万次。而在去年 12 月，这一数字约为 1200 万次。它仍保持着高速增长的趋势，没有任何放缓的 迹象。
 
-### 2.安装Node.js
+> 从 2.0 版本开始，TypeScript 每两月定期发布一个 release。但是现在放缓了发布的节奏，改为每三个 月发布一次。其中会花一个月编写新 features 并发布 beta 版本，剩下两个月对 beta 版进行测试和 bug 修复，这使得后续的发布更加稳定.
 
-### 3.使用npm全局安装typescript
+### 1.2 JS,ES,TS的关系
 
-- 进入命令行
-- 输入：npm i -g typescript
+- 1995年：JavaScript
+  - 当时的网景公司正凭借其Navigator浏览器成为Web时代开启时最著名的第一代互联网公司
+  - 由于网景公司希望能在静态HTML页面上添加一些动态效果，于是 Brendan Eich 在两周之内设计出了 JavaScript语言。
+  - 为什么起名叫JavaScript？原因是当时Java语言非常红火，所以网景公司希望借Java的名气来推广，但事 实上JavaScript除了语法上有点像Java，其他部分基本上没啥关系.
+- 1997年：ECMAScript
+  - 因为网景开发了JavaScript，一年后微软又模仿JavaScript开发了JScript，为了让JavaScript成为全球标 准，几个公司联合ECMA（European Computer Manufacturers Association）（欧洲计算机制造商协 会）组织制定了JavaScript 语言的标准，被称为ECMAScript标准.
+- 2015年：TypeScript
+  - TypeScript 是 JavaScript 的超集，即包含JavaScript 的所有元素，能运行JavaScript 的代码，并扩展了 JavaScript 的语法。相比于JavaScript ，它还增加了静态类型、类、模块、接口和类型注解方面的功能， 更易于大项目的开发。
+  - TypeScript 提供最新的和不断发展的 JavaScript 特性，包括那些来自 2015 年的 ECMAScript 和未来的 提案中的特性，比如异步功能和 Decorators，以帮助建立健壮的组件。下图显示了 TypeScript 与 ES5、ES2015+ 之间的关系：
+  - <img src="C:\Users\30287\Downloads\uTools_1665406404455.png" style="zoom:50%;" />
 
-### 4.创建一个ts文件
+### 1.3 TypeScript与JavaScript的区别
 
-### 5.使用tsc对ts文件进行编译
+| TypeScript                                     | JavaScript                                 |
+| ---------------------------------------------- | ------------------------------------------ |
+| JavaScript 的超集用于解决大型项目的代码复杂性  | 一种脚本语言，用于创建动态网页             |
+| 可以在编译期间发现并纠正错误                   | 作为一种解释型语言，只能在运行时发现错误   |
+| 强类型，支持静态和动态类型                     | 弱类型，没有静态类型选项                   |
+| 最终被编译成 JavaScript 代码，使浏览器可以理解 | 可以直接在浏览器中使用                     |
+| 支持模块、泛型和接口                           | 不支持模块、泛型或接口                     |
+| 支持 ES3，ES4，ES5 和 ES6+功能                 | 不支持编译其他 ES3，ES4，ES5 或 ES6+功能   |
+| 社区的支持仍在增长，而且还不是很大             | 大量的社区支持以及大量文档和解决问题的支持 |
 
-- 进入命令行
+## 二、TypeScript入门
 
-- 进入ts文件所在目录
+### 2.1 发现问题
 
-- 执行命令：tsc xxx.ts
+JavaScript 中的每个值都有一组行为，您可以通过运行不同的操作来观察。这听起来很抽象，我们来举 一个简单的例子，考虑我们可能对名为 message 的变量运行的一些操作：
 
-  
+```js
+// 在 'message' 上访问属性 'toLowerCase'，并调用它
+message.toLowerCase();
+// 调用 'message'
+message();
+```
 
-## 3、基本类型
+如果我们分解它，第一行可运行的代码访问一个属性 toLowerCase ，然后调用它。第二个尝试 message 直接调用。
 
-### 1.类型声明
+但是假设我们不知道 message 。这很常见——我们无法可靠地说出尝试运行任何这些代码会得到什么结 果。每个操作的行为完全取决于我们最初给 message 的赋值。
 
-- 类型声明是TS非常重要的一个特点
+- 可以调用 message 吗？ 
+- 它有 toLowerCase 这个属性吗？ 
+- 如果能， toLowerCase 可以调用吗？ 
+- 如果这两个值都是可调用的，它们返回什么？
 
-- 通过类型声明可以指定TS中变量（参数、形参）的类型
+这些问题的答案通常是我们在编写 JavaScript 时牢记在心的东西，我们必须希望所有细节都正确。 假设 message 按以下方式定义:
 
-- 指定类型后，当为变量赋值时，TS编译器会自动检查值是否符合类型声明，符合则赋值，否则报错
+```js
+const message = "Hello World!";
+```
 
-- 简而言之，类型声明给变量设置了类型，使得变量只能存储某种类型的值
+正如您可能猜到的，如果我们尝试运行 message.toLowerCase() ，我们只会得到相同的小写字符串。 那第二行代码呢？如果您熟悉 JavaScript，您就会知道这会失败并出现异常：
 
-- 语法：
+```js
+TypeError: message is not a function
+```
 
-  - ```typescript
-    let 变量: 类型;
-    
-    let 变量: 类型 = 值;
-    
-    function fn(参数: 类型, 参数: 类型): 类型{
-        ...
-    }
-    ```
+如果我们能避免这样的错误，那就太好了.
 
-### 2.自动类型判断
+当我们运行我们的代码时，我们的 JavaScript 运行时选择做什么的方式是通过确定值的类型——它具有 什么样的行为和功能。这 TypeError 就是暗指的一部分- 它说字符串 "Hello World!" 不能作为函数调 用。
 
-- TS拥有自动的类型判断机制
-- 当对变量的声明和赋值是同时进行的，TS编译器会自动判断变量的类型
-- 所以如果你的变量的声明和赋值时同时进行的，可以省略掉类型声明
+对于某些值，例如基本类型 string 和 number ，我们可以在运行时使用 typeof 运算符识别它们的类 型。但是对于函数之类的其他东西，没有相应的运行时机制来识别它们的类型。例如，考虑这个函数：
 
-### 3.类型
+```tsx
+function fn(x) {
+	return x.flip();
+}
+```
 
-|  类型   |       例子        |              描述              |
-| :-----: | :---------------: | :----------------------------: |
-| number  |    1, -33, 2.5    |            任意数字            |
-| string  | 'hi', "hi", `hi`  |           任意字符串           |
-| boolean |    true、false    |       布尔值true或false        |
-| 字面量  |      其本身       |  限制变量的值就是该字面量的值  |
-|   any   |         *         |            任意类型            |
-| unknown |         *         |         类型安全的any          |
-|  void   | 空值（undefined） |     没有值（或undefined）      |
-|  never  |      没有值       |          不能是任何值          |
-| object  |  {name:'孙悟空'}  |          任意的JS对象          |
-|  array  |      [1,2,3]      |           任意JS数组           |
-|  tuple  |       [4,5]       | 元素，TS新增类型，固定长度数组 |
-|  enum   |    enum{A, B}     |       枚举，TS中新增类型       |
+我们可以通过阅读代码观察到这个函数只有在给定一个具有可调用 flip 属性的对象时才能工作，但是 JavaScript 并没有以我们可以在代码运行时检查的方式来显示这些信息。在纯 JavaScript 中，告诉 fn 特 定值做什么的唯一方法是调用它并查看会发生什么。这种行为使得在运行之前很难预测代码会做什么， 这意味着在编写代码时更难知道代码会做什么.
 
-- number
+这样看来，类型是描述可以传递给 fn 哪些值会崩溃的概念。JavaScript 只真正提供动态类型——运行代 码看看会发生什么。
 
-  - ```typescript
-    let decimal: number = 6;
-    let hex: number = 0xf00d;
-    let binary: number = 0b1010;
-    let octal: number = 0o744;
-    let big: bigint = 100n;
-    ```
+另一种方法是使用静态类型系统在运行之前预测预期的代码.
 
-- boolean
+### 2.2 静态类型检查
 
-  - ```typescript
-    let isDone: boolean = false;
-    ```
+回想一下 `TypeError `我们之前尝试将 `string `作为函数调用的情况。 大多数人不喜欢在运行他们的代码 时出现任何类型的错误 - 这些被认为是错误！当我们编写新代码时，我们会尽量避免引入新的错误.
 
-- string
+理想情况下，我们可以有一个工具来帮助我们在代码运行之前发现这些错误。这就是像 TypeScript 这样 的静态类型检查器所做的。 静态类型系统描述了当我们运行程序时我们的值的形状和行为。像 TypeScript 这样的类型检查器，告诉我们什么时候事情可能会出轨。
 
-  - ```typescript
-    let color: string = "blue";
-    color = 'red';
-    
-    let fullName: string = `Bob Bobbington`;
-    let age: number = 37;
-    let sentence: string = `Hello, my name is ${fullName}.
-    
-    I'll be ${age + 1} years old next month.`;
-    ```
-
-- 字面量
-
-  - 也可以使用字面量去指定变量的类型，通过字面量可以确定变量的取值范围
-
-  - ```typescript
-    let color: 'red' | 'blue' | 'black';
-    let num: 1 | 2 | 3 | 4 | 5;
-    ```
-
-- any
-
-  - ```typescript
-    let d: any = 4;
-    d = 'hello';
-    d = true;
-    ```
-
-- unknown
-
-  - ```typescript
-    let notSure: unknown = 4;
-    notSure = 'hello';
-    ```
-
-- void
-
-  - ```typescript
-    let unusable: void = undefined;
-    ```
-
-- never
-
-  - ```typescript
-    function error(message: string): never {
-      throw new Error(message);
-    }
-    ```
-
-- object（没啥用）
-
-  - ```typescript
-    let obj: object = {};
-    
-    //{} 用来指定对象中可以包含哪些属性
-    //语法：{属性名：属性值，属性名：属性值}
-    //在属性名后边加上？，表示属性可选
-    let b: {name:string,age?:number}
-    b = {name:'asdf',age:18}
-    //[propName: string]: any 表示任意类型的属性
-    let c : {name:string, [propName:string]: any}
-    c = {name: 'asdf', age:18, gender: '男'}   
-    
-    //设置函数的类型声明:
-    //语法:(形参:;类型, 形参:类型...) => 返回值
-    let d: (a:number, b: number)
-    d = function (n1: string, n2: string): number {
-      return 10
-    }
-    ```
+<img src="https://fastly.jsdelivr.net/gh/xiaoyua499/imageBox@main/1665407027948uTools_1665406935762.png" style="zoom:80%;" />
 
-- array
+在我们运行代码之前，使用 TypeScript 运行最后一个示例会给我们一条错误消息。
 
-  - ```typescript
-    let list: number[] = [1, 2, 3];
-    let list: Array<number> = [1, 2, 3];
-    ```
+### 2.3 非异常故障
 
-- tuple
+到目前为止，我们一直在讨论运行时错误——JavaScript 运行时告诉我们它认为某些东西是无意义的情 况。出现这些情况是因为ECMAScript 规范明确说明了语言在遇到意外情况时应该如何表现。
 
-  - ```typescript
-    let x: [string, number];
-    x = ["hello", 10]; 
-    ```
+例如，规范说尝试调用不可调用的东西应该抛出错误。也许这听起来像是“明显的行为”，但您可以想象 访问对象上不存在的属性也应该抛出错误。相反，JavaScript 给了我们不同的行为并返回值 `undefined `：
 
-- enum
+```tsx
+const user = {
+	name: "小千",
+	age: 26,
+};
+user.location; // 返回 undefined
+```
 
-  - ```typescript
-    enum Color {
-      Red,
-      Green,
-      Blue,
-    }
-    let c: Color = Color.Green;
-    
-    enum Color {
-      Red = 1,
-      Green,
-      Blue,
-    }
-    let c: Color = Color.Green;
-    
-    enum Color {
-      Red = 1,
-      Green = 2,
-      Blue = 4,
-    }
-    let c: Color = Color.Green;
-    ```
+最终，静态类型系统要求必须调用哪些代码，应该在其系统中标记，即使它是不会立即抛出错误的“有 效”JavaScript。比如：在 TypeScript 中，以下代码会产生关于 location 未定义的错误：
 
-- 类型断言
 
-  - 有些情况下，变量的类型对于我们来说是很明确，但是TS编译器却并不清楚，此时，可以通过类型断言来告诉编译器变量的类型，断言有两种形式：
 
-    - 第一种
 
-      - ```typescript
-        let someValue: unknown = "this is a string";
-        let strLength: number = (someValue as string).length;
-        ```
-
-    - 第二种
-
-      - ```typescript
-        let someValue: unknown = "this is a string";
-        let strLength: number = (<string>someValue).length;
-        ```
-
-        
-
-## 4、编译选项
-
-### 1.自动编译文件
-
-- 编译文件时，使用 -w 指令后，TS编译器会自动监视文件的变化，并在文件发生变化时对文件进行重新编译。
-
-- 示例：
-
-  - ```powershell
-    tsc xxx.ts -w
-    ```
-
-### 2.自动编译整个项目
-
-1. 如果直接使用tsc指令，则可以自动将当前项目下的所有ts文件编译为js文件。
-2. 但是能直接使用tsc命令的前提时，要先在项目根目录下创建一个ts的配置文件 tsconfig.json
-3. tsconfig.json是一个JSON文件，添加配置文件后，只需只需 tsc 命令即可完成对整个项目的编译
-4. 配置选项：
-
-- include
-
-  - 定义希望被编译文件所在的目录
-
-  - 默认值：["\*\*/\*"]
-
-  - 示例：
-
-    ```json
-    "include":["src/**/*", "tests/**/*"]
-    ```
-
-    上述示例中，所有src目录和tests目录下的文件都会被编译
-
-- exclude
-
-  - 定义需要排除在外的目录
-
-  - 默认值：["node_modules", "bower_components", "jspm_packages"]
-
-    - 示例：
-
-    - ```json
-      "exclude": ["./src/hello/**/*"]
-      ```
-
-    - 上述示例中，src下hello目录下的文件都不会被编译
-
-- extends
-
-  - 定义被继承的配置文件
-
-  - 示例：
-
-    - ```json
-      "extends": "./configs/base"
-      ```
-
-    - 上述示例中，当前配置文件中会自动包含config目录下base.json中的所有配置信息
-
-- files
-
-  - 指定被编译文件的列表，只有需要编译的文件少时才会用到
-
-  - 示例：
-
-    - ```json
-      "files": [
-          "core.ts",
-          "sys.ts",
-          "types.ts",
-          "scanner.ts",
-          "parser.ts",
-          "utilities.ts",
-          "binder.ts",
-          "checker.ts",
-          "tsc.ts"
-        ]
-      ```
-
-    - 列表中的文件都会被TS编译器所编译
-
-  - compilerOptions
-
-    - 编译选项是配置文件中非常重要也比较复杂的配置选项
-
-    - 在compilerOptions中包含多个子选项，用来完成对编译的配置
-
-      - 项目选项
-
-        - target
-
-          - 设置ts代码编译的目标版本
-
-          - 可选值：
-
-            - ES3（默认）、ES5、ES6/ES2015、ES7/ES2016、ES2017、ES2018、ES2019、ES2020、ESNext
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "target": "ES6"
-              }
-              ```
-
-            - 如上设置，我们所编写的ts代码将会被编译为ES6版本的js代码
-
-        - lib
-
-          - 指定代码运行时所包含的库（宿主环境）
-
-          - 可选值：
-
-            - ES5、ES6/ES2015、ES7/ES2016、ES2017、ES2018、ES2019、ES2020、ESNext、DOM、WebWorker、ScriptHost ......
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "target": "ES6",
-                  "lib": ["ES6", "DOM"],
-                  "outDir": "dist",
-                  "outFile": "dist/aa.js"
-              }
-              ```
-
-        - module
-
-          - 设置编译后代码使用的模块化系统
-
-          - 可选值：
-
-            - CommonJS、UMD、AMD、System、ES2020、ESNext、None
-
-          - 示例：
-
-            - ```typescript
-              "compilerOptions": {
-                  "module": "CommonJS"
-              }
-              ```
-
-        - outDir
-
-          - 编译后文件的所在目录
-
-          - 默认情况下，编译后的js文件会和ts文件位于相同的目录，设置outDir后可以改变编译后文件的位置
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "outDir": "dist"
-              }
-              ```
-
-            - 设置后编译后的js文件将会生成到dist目录
-
-        - outFile
-
-          - 将所有的文件编译为一个js文件
-
-          - 默认会将所有的编写在全局作用域中的代码合并为一个js文件，如果module制定了None、System或AMD则会将模块一起合并到文件之中
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "outFile": "dist/app.js"
-              }
-              ```
-
-        - rootDir
-
-          - 指定代码的根目录，默认情况下编译后文件的目录结构会以最长的公共目录为根目录，通过rootDir可以手动指定根目录
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "rootDir": "./src"
-              }
-              ```
-
-        - allowJs
-
-          - 是否对js文件编译
-
-        - checkJs
-
-          - 是否对js文件进行检查
-
-          - 示例：
-
-            - ```json
-              "compilerOptions": {
-                  "allowJs": true,
-                  "checkJs": true
-              }
-              ```
-
-        - removeComments
-
-          - 是否删除注释
-          - 默认值：false
-
-        - noEmit
-
-          - 不对代码进行编译
-          - 默认值：false
-
-        - sourceMap
-
-          - 是否生成sourceMap
-          - 默认值：false
-
-          
-
-      - 严格检查
-
-        - strict
-          - 启用所有的严格检查，默认值为true，设置后相当于开启了所有的严格检查
-        - alwaysStrict
-          - 总是以严格模式对代码进行编译
-        - noImplicitAny
-          - 禁止隐式的any类型
-        - noImplicitThis
-          - 禁止类型不明确的this
-        - strictBindCallApply
-          - 严格检查bind、call和apply的参数列表
-        - strictFunctionTypes
-          - 严格检查函数的类型
-        - strictNullChecks
-          - 严格的空值检查
-        - strictPropertyInitialization
-          - 严格检查属性是否初始化
-
-      - 额外检查
-
-        - noFallthroughCasesInSwitch
-          - 检查switch语句包含正确的break
-        - noImplicitReturns
-          - 检查函数没有隐式的返回值
-        - noUnusedLocals
-          - 检查未使用的局部变量
-        - noUnusedParameters
-          - 检查未使用的参数
-
-      - 高级
-
-        - allowUnreachableCode
-          - 检查不可达代码
-          - 可选值：
-            - true，忽略不可达代码
-            - false，不可达代码将引起错误
-        - noEmitOnError
-          - 有错误的情况下不进行编译
-          - 默认值：false
-
-## 5、webpack
-
-> 通常情况下，实际开发中我们都需要使用构建工具对代码进行打包，TS同样也可以结合构建工具一起使用，下边以webpack为例介绍一下如何结合构建工具使用TS。
-
-- 步骤：
-
-  1. 初始化项目
-
-     - 进入项目根目录，执行命令 ``` npm init -y```
-       - 主要作用：创建package.json文件
-
-  2. 下载构建工具
-
-     - ```npm i -D webpack webpack-cli webpack-dev-server typescript ts-loader clean-webpack-plugin```
-       - 共安装了7个包
-         - webpack
-           - 构建工具webpack
-         - webpack-cli
-           - webpack的命令行工具
-         - webpack-dev-server
-           - webpack的开发服务器
-         - typescript
-           - ts编译器
-         - ts-loader
-           - ts加载器，用于在webpack中编译ts文件
-         - html-webpack-plugin
-           - webpack中html插件，用来自动创建html文件
-         - clean-webpack-plugin
-           - webpack中的清除插件，每次构建都会先清除目录
-
-  3. 根目录下创建webpack的配置文件webpack.config.js
-
-     - ```javascript
-       const path = require("path");
-       const HtmlWebpackPlugin = require("html-webpack-plugin");
-       const { CleanWebpackPlugin } = require("clean-webpack-plugin");
-       
-       module.exports = {
-           optimization:{
-               minimize: false // 关闭代码压缩，可选
-           },
-       
-           entry: "./src/index.ts",
-           
-           devtool: "inline-source-map",
-           
-           devServer: {
-               contentBase: './dist'
-           },
-       
-           output: {
-               path: path.resolve(__dirname, "dist"),
-               filename: "bundle.js",
-               environment: {
-                   arrowFunction: false // 关闭webpack的箭头函数，可选
-               }
-           },
-       
-           resolve: {
-               extensions: [".ts", ".js"]
-           },
-           
-           module: {
-               rules: [
-                   {
-                       test: /\.ts$/,
-                       use: {
-                          loader: "ts-loader"     
-                       },
-                       exclude: /node_modules/
-                   }
-               ]
-           },
-       
-           plugins: [
-               new CleanWebpackPlugin(),
-               new HtmlWebpackPlugin({
-                   title:'TS测试'
-               }),
-           ]
-       
-       }
-       ```
-
-  4. 根目录下创建tsconfig.json，配置可以根据自己需要
-
-     - ```json
-       {
-           "compilerOptions": {
-               "target": "ES2015",
-               "module": "ES2015",
-               "strict": true
-           }
-       } 
-       ```
-
-  5. 修改package.json添加如下配置
-
-     - ```json
-       {
-         ...略...
-         "scripts": {
-           "test": "echo \"Error: no test specified\" && exit 1",
-           "build": "webpack",
-           "start": "webpack serve --open chrome.exe"
-         },
-         ...略...
-       }
-       ```
-
-  6. 在src下创建ts文件，并在并命令行执行```npm run build```对代码进行编译，或者执行```npm start```来启动开发服务器
-
-     
-
-## 6、Babel
-
-> 经过一系列的配置，使得TS和webpack已经结合到了一起，除了webpack，开发中还经常需要结合babel来对代码进行转换以使其可以兼容到更多的浏览器，在上述步骤的基础上，通过以下步骤再将babel引入到项目中。
->
-
-1. 安装依赖包：
-   - ```npm i -D @babel/core @babel/preset-env babel-loader core-js```
-   - 共安装了4个包，分别是：
-     - @babel/core
-       - babel的核心工具
-     - @babel/preset-env
-       - babel的预定义环境
-     - @babel-loader
-       - babel在webpack中的加载器
-     - core-js
-       - core-js用来使老版本的浏览器支持新版ES语法
-
-2. 修改webpack.config.js配置文件
-
-   - ```javascript
-     ...略...
-     module: {
-         rules: [
-             {
-                 test: /\.ts$/,
-                 use: [
-                     {
-                         loader: "babel-loader",
-                         options:{
-                             presets: [
-                                 [
-                                     "@babel/preset-env",
-                                     {
-                                         "targets":{
-                                             "chrome": "58",
-                                             "ie": "11"
-                                         },
-                                         "corejs":"3",
-                                         "useBuiltIns": "usage"
-                                     }
-                                 ]
-                             ]
-                         }
-                     },
-                     {
-                         loader: "ts-loader",
-     
-                     }
-                 ],
-                 exclude: /node_modules/
-             }
-         ]
-     }
-     ...略...
-     ```
-
-   - 如此一来，使用ts编译后的文件将会再次被babel处理，使得代码可以在大部分浏览器中直接使用，可以在配置选项的targets中指定要兼容的浏览器版本。
-
-## 7.面向对象
-
-> 面向对象是程序中一个非常重要的思想，它被很多同学理解成了一个比较难，比较深奥的问题，其实不然。面向对象很简单，简而言之就是程序之中所有的操作都需要通过对象来完成。
->
-
-- 举例来说：
-  - 操作浏览器要使用window对象
-  - 操作网页要使用document对象
-  - 操作控制台要使用console对象
-
-一切操作都要通过对象，也就是所谓的面向对象，那么对象到底是什么呢？这就要先说到程序是什么，计算机程序的本质就是对现实事物的抽象，抽象的反义词是具体，比如：照片是对一个具体的人的抽象，汽车模型是对具体汽车的抽象等等。程序也是对事物的抽象，在程序中我们可以表示一个人、一条狗、一把枪、一颗子弹等等所有的事物。一个事物到了程序中就变成了一个对象。
-
-在程序中所有的对象都被分成了两个部分数据和功能，以人为例，人的姓名、性别、年龄、身高、体重等属于数据，人可以说话、走路、吃饭、睡觉这些属于人的功能。数据在对象中被成为属性，而功能就被称为方法。所以简而言之，在程序中一切皆是对象。
-
-### 1、类（class）
-
-要想面向对象，操作对象，首先便要拥有对象，那么下一个问题就是如何创建对象。要创建对象，必须要先定义类，所谓的类可以理解为对象的模型，程序中可以根据类创建指定类型的对象，举例来说：可以通过Person类来创建人的对象，通过Dog类创建狗的对象，通过Car类来创建汽车的对象，不同的类可以用来创建不同的对象。
-
-- 定义类：
-
-  - ```typescript
-    class 类名 {
-    	属性名: 类型;
-    	
-    	constructor(参数: 类型){
-    		this.属性名 = 参数;
-    	}
-    	
-    	方法名(){
-    		....
-    	}
-    
-    }
-    ```
-
-- 示例：
-
-  - ```typescript
-    class Person{
-        name: string;
-        age: number;
-    
-        constructor(name: string, age: number){
-            this.name = name;
-            this.age = age;
-        }
-    
-        sayHello(){
-            console.log(`大家好，我是${this.name}`);
-        }
-    }
-    ```
-
-- 使用类：
-
-  - ```typescript
-    const p = new Person('孙悟空', 18);
-    p.sayHello();
-    ```
-
-### 2、面向对象的特点
-
-#### 封装
-
-- 对象实质上就是属性和方法的容器，它的主要作用就是存储属性和方法，这就是所谓的封装
-
-- 默认情况下，对象的属性是可以任意的修改的，为了确保数据的安全性，在TS中可以对属性的权限进行设置
-
-- 只读属性（readonly）：
-
-  - 如果在声明属性时添加一个readonly，则属性便成了只读属性无法修改
-
-- TS中属性具有三种修饰符：
-
-  - public（默认值），可以在类、子类和对象中修改
-  - protected ，可以在类、子类中修改
-  - private ，可以在类中修改
-
-- 示例：
-
-  - public
-
-    - ```typescript
-      class Person{
-          public name: string; // 写或什么都不写都是public
-          public age: number;
-      
-          constructor(name: string, age: number){
-              this.name = name; // 可以在类中修改
-              this.age = age;
-          }
-      
-          sayHello(){
-              console.log(`大家好，我是${this.name}`);
-          }
-      }
-      
-      class Employee extends Person{
-          constructor(name: string, age: number){
-              super(name, age);
-              this.name = name; //子类中可以修改
-          }
-      }
-      
-      const p = new Person('孙悟空', 18);
-      p.name = '猪八戒';// 可以通过对象修改
-      ```
-
-  - protected
-
-    - ```typescript
-      class Person{
-          protected name: string;
-          protected age: number;
-      
-          constructor(name: string, age: number){
-              this.name = name; // 可以修改
-              this.age = age;
-          }
-      
-          sayHello(){
-              console.log(`大家好，我是${this.name}`);
-          }
-      }
-      
-      class Employee extends Person{
-      
-          constructor(name: string, age: number){
-              super(name, age);
-              this.name = name; //子类中可以修改
-          }
-      }
-      
-      const p = new Person('孙悟空', 18);
-      p.name = '猪八戒';// 不能修改
-      ```
-
-  - private
-
-    - ```typescript
-      class Person{
-          private name: string;
-          private age: number;
-      
-          constructor(name: string, age: number){
-              this.name = name; // 可以修改
-              this.age = age;
-          }
-      
-          sayHello(){
-              console.log(`大家好，我是${this.name}`);
-          }
-      }
-      
-      class Employee extends Person{
-      
-          constructor(name: string, age: number){
-              super(name, age);
-              this.name = name; //子类中不能修改
-          }
-      }
-      
-      const p = new Person('孙悟空', 18);
-      p.name = '猪八戒';// 不能修改
-      ```
-
-
-#### 属性存取器
-
-- 对于一些不希望被任意修改的属性，可以将其设置为private
-
-- 直接将其设置为private将导致无法再通过对象修改其中的属性
-
-- 我们可以在类中定义一组读取、设置属性的方法，这种对属性读取或设置的属性被称为属性的存取器
-
-- 读取属性的方法叫做setter方法，设置属性的方法叫做getter方法
-
-- 示例：
-
-  - ```typescript
-    class Person{
-        private _name: string;
-    
-        constructor(name: string){
-            this._name = name;
-        }
-    
-        get name(){
-            return this._name;
-        }
-    
-        set name(name: string){
-            this._name = name;
-        }
-    
-    }
-    
-    const p1 = new Person('孙悟空');
-    console.log(p1.name); // 通过getter读取name属性
-    p1.name = '猪八戒'; // 通过setter修改name属性
-    ```
-
-#### 静态属性
-
-- 静态属性（方法），也称为类属性。使用静态属性无需创建实例，通过类即可直接使用
-
-- 静态属性（方法）使用static开头
-
-- 示例：
-
-  - ```typescript
-    class Tools{
-        static PI = 3.1415926;
-        
-        static sum(num1: number, num2: number){
-            return num1 + num2
-        }
-    }
-    
-    console.log(Tools.PI);
-    console.log(Tools.sum(123, 456));
-    ```
-
-- this
-
-  - 在类中，使用this表示当前对象
-
-#### 继承
-
-- 继承时面向对象中的又一个特性
-
-- 通过继承可以将其他类中的属性和方法引入到当前类中
-
-  - 示例：
-
-    - ```typescript
-      class Animal{
-          name: string;
-          age: number;
-      
-          constructor(name: string, age: number){
-              this.name = name;
-              this.age = age;
-          }
-      }
-      
-      class Dog extends Animal{
-      
-          bark(){
-              console.log(`${this.name}在汪汪叫！`);
-          }
-      }
-      
-      const dog = new Dog('旺财', 4);
-      dog.bark();
-      ```
-
-- 通过继承可以在不修改类的情况下完成对类的扩展
-
-- 重写
-
-  - 发生继承时，如果子类中的方法会替换掉父类中的同名方法，这就称为方法的重写
-
-  - 示例：
-
-    - ```typescript
-      class Animal{
-          name: string;
-          age: number;
-      
-          constructor(name: string, age: number){
-              this.name = name;
-              this.age = age;
-          }
-      
-          run(){
-              console.log(`父类中的run方法！`);
-          }
-      }
-      
-      class Dog extends Animal{
-      
-          bark(){
-              console.log(`${this.name}在汪汪叫！`);
-          }
-      
-          run(){
-              console.log(`子类中的run方法，会重写父类中的run方法！`);
-          }
-      }
-      
-      const dog = new Dog('旺财', 4);
-      dog.bark();
-      ```
-
-    - 在子类中可以使用super来完成对父类的引用
-
-
-#### 抽象类（abstract class）
-
-- > 抽象类是专门用来被其他类所继承的类，它只能被其他类所继承不能用来创建实例
-
-- ```typescript
-  abstract class Animal{
-      abstract run(): void;
-      bark(){
-          console.log('动物在叫~');
-      }
-  }
-  
-  class Dog extends Animals{
-      run(){
-          console.log('狗在跑~');
-      }
-  }
-  ```
-
-- 使用abstract开头的方法叫做抽象方法，抽象方法没有方法体只能定义在抽象类中，继承抽象类时抽象方法必须要实现
-
-
-
-### 3、接口（Interface）
-
-> 接口的作用类似于抽象类，不同点在于接口中的所有方法和属性都是没有实值的，换句话说接口中的所有方法都是抽象方法。接口主要负责定义一个类的结构，接口可以去限制一个对象的接口，对象只有包含接口中定义的所有属性和方法时才能匹配接口。同时，可以让一个类去实现接口，实现接口时类中要保护接口中的所有属性。
->
-
-- 示例（检查对象类型）：
-
-  - ```typescript
-    interface Person{
-        name: string;
-        sayHello():void;
-    }
-    
-    function fn(per: Person){
-        per.sayHello();
-    }
-    
-    fn({name:'孙悟空', sayHello() {console.log(`Hello, 我是 ${this.name}`)}});
-    
-    ```
-
-- 示例（实现）
-
-  - ```typescript
-    interface Person{
-        name: string;
-        sayHello():void;
-    }
-    
-    class Student implements Person{
-        constructor(public name: string) {
-        }
-    
-        sayHello() {
-            console.log('大家好，我是'+this.name);
-        }
-    }
-    ```
-
-  - 
-
-
-
-### 4、泛型（Generic）
-
-> 定义一个函数或类时，有些情况下无法确定其中要使用的具体类型（返回值、参数、属性的类型不能确定），此时泛型便能够发挥作用。
->
-
-- 举个例子：
-
-  - ```typescript
-    function test(arg: any): any{
-    	return arg;
-    }
-    ```
-
-  - 上例中，test函数有一个参数类型不确定，但是能确定的时其返回值的类型和参数的类型是相同的，由于类型不确定所以参数和返回值均使用了any，但是很明显这样做是不合适的，首先使用any会关闭TS的类型检查，其次这样设置也不能体现出参数和返回值是相同的类型
-
-  - 使用泛型：
-
-  - ```typescript
-    function test<T>(arg: T): T{
-    	return arg;
-    }
-    ```
-
-  - 这里的```<T>```就是泛型，T是我们给这个类型起的名字（不一定非叫T），设置泛型后即可在函数中使用T来表示该类型。所以泛型其实很好理解，就表示某个类型。
-
-  - 那么如何使用上边的函数呢？
-
-    - 方式一（直接使用）：
-
-      - ```typescript
-        test(10)
-        ```
-
-      - 使用时可以直接传递参数使用，类型会由TS自动推断出来，但有时编译器无法自动推断时还需要使用下面的方式
-
-    - 方式二（指定类型）：
-
-      - ```typescript
-        test<number>(10)
-        ```
-
-      - 也可以在函数后手动指定泛型
-
-  - 可以同时指定多个泛型，泛型间使用逗号隔开：
-
-    - ```typescript
-      function test<T, K>(a: T, b: K): K{
-          return b;
-      }
-      
-      test<number, string>(10, "hello");
-      ```
-
-    - 使用泛型时，完全可以将泛型当成是一个普通的类去使用
-
-  - 类中同样可以使用泛型：
-
-    - ```typescript
-      class MyClass<T>{
-          prop: T;
-      
-          constructor(prop: T){
-              this.prop = prop;
-          }
-      }
-      ```
-
-  - 除此之外，也可以对泛型的范围进行约束
-
-    - ```typescript
-      interface MyInter{
-          length: number;
-      }
-      
-      function test<T extends MyInter>(arg: T): number{
-          return arg.length;
-      }
-      ```
-
-    - 使用T extends MyInter表示泛型T必须是MyInter的子类，不一定非要使用接口类和抽象类同样适用。
 
 
 
