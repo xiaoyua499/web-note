@@ -119,11 +119,127 @@ user.location; // 返回 undefined
 
 最终，静态类型系统要求必须调用哪些代码，应该在其系统中标记，即使它是不会立即抛出错误的“有 效”JavaScript。比如：在 TypeScript 中，以下代码会产生关于 location 未定义的错误：
 
+![image-20221126204132255](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20221126204132255.png)
+
+TypeScript 可以在我们的程序中捕获很多合法的错误。例如：
+
+<img src="C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20221126204159790.png" alt="image-20221126204159790" style="zoom:80%;" />
+
+### 2.4 使用工具
+
+> 当我们在代码中出错时，TypeScript 可以捕获错误。这很好，但 TypeScript 也可以首先防止我们犯这些 错误。 类型检查器有能力帮助我们来检查，诸如是否正在访问变量和其他属性的正确属性。一旦有了这些信 息，它还可以开始建议您可能想要使用的属性。 这意味着当利用工具来编辑 TypeScript 代码，核心类型检查器可以在编辑器中键入代码时，提供错误 消息和代码完成。这是我们在谈论 TypeScript 中的工具时经常提到的部分内容。
+
+<img src="C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20221126204312126.png" alt="image-20221126204312126" style="zoom:67%;" />
+
+TypeScript 非常重视工具。支持 TypeScript 的编辑器可以提供“快速修复”以自动修复错误、重构以轻松 重新组织代码的能力，以及用于跳转到变量定义或查找给定变量的所有引用的有用导航功能。所有这些 都建立在类型检查器之上，并且是完全跨平台的，因此您最喜欢的编辑器可能具有可用的 TypeScript 支持。
+
+### 2.5 tsc编译器
+
+> 我们一直在谈论类型检查，但我们还没有使用我们的类型检查器。让我们认识一下我们的新朋友 tsc TypeScript 编译器。首先，我们需要通过 npm 获取它。
+
+```js
+npm install -g typescript
+```
+
+这将全局安装 TypeScript 编译器。 
+
+现在让我们移动到一个空文件夹，并尝试编写我们的第一个 TypeScript 程序 hello.ts ：
+
+**01-ts-basics/hello.ts**
+
+```js
+// 你好，世界
+console.log('Hello World')
+```
+
+注意这里没有多余的装饰；这个“hello world”程序看起来与您在 JavaScript 中为“hello world”程序编写 的程序相同。现在让我们通过运行 tsc 由 typescript 包为我们打包编译它：
+
+```js
+[felix] 01-ts-basics $ tsc hello.ts
+```
+
+我们跑了 tsc ，什么也没发生！嗯，没有类型错误，所以我们没有在控制台中得到任何输出，因为没有 什么可报告的。
+
+<img src="C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20221126204600198.png" alt="image-20221126204600198" style="zoom:67%;" />
+
+但是再检查一下 - 我们得到了一些文件输出。如果我们查看当前目录，我们会发现有两个文件 hello.js 在 hello.ts . 这是我们的 hello.ts 文件在 tsc 编译或转换为纯 JavaScript 文件后的输出。
+
+![image-20221126204622323](C:\Users\30287\AppData\Roaming\Typora\typora-user-images\image-20221126204622323.png)
+
+如果我们检查 hello.js ，我们将看到 TypeScript 在处理 .ts 文件后吐出的内容：
 
 
 
+## 四、类型缩小
 
+### 4.10 never类型与穷尽性检查
 
+在缩小范围时，你可以将一个联合体的选项减少到你已经删除了所有的可能性并且什么都不剩的程度。 在这些情况下，TypeScript将使用一个 never 类型来代表一个不应该存在的状态。
 
+never 类型可以分配给每个类型；但是，没有任何类型可以分配给never（除了never本身）。这意味 着你可以使用缩小并依靠 never 的出现在 switch 语句中做详尽的检查。
 
+例如，在我们的 getArea 函数中添加一个默认值，试图将形状分配给 never ，当每个可能的情况都没有 被处理时，就会引发。
+
+```ts
+type Shape = Circle | Square;
+function getArea(shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+    	return Math.PI * shape.radius ** 2;
+    case "square":
+    	return shape.sideLength ** 2;
+    default:
+    	const _exhaustiveCheck: never = shape;
+    	return _exhaustiveCheck;
+  }
+}
+```
+
+在 Shape 联盟中添加一个新成员，将导致TypeScript错误。
+
+```ts
+interface Triangle {
+  kind: "triangle";
+  sideLength: number;
+}
+type Shape = Circle | Square | Triangle;
+function getArea(shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+    	return Math.PI * shape.radius ** 2;
+    case "square":
+    	return shape.sideLength ** 2;
+    default:
+    	const _exhaustiveCheck: never = shape;
+    	return _exhaustiveCheck;
+  }
+}
+```
+
+<img src="C:\Users\30287\Downloads\uTools_1669871248370.png" alt="uTools_1669871248370" style="zoom: 67%;" />
+
+## 五、函数
+
+### 5.1 函数类型表达式
+
+> 描述一个函数的最简单方法是用一个函数类型表达式。这些类型在语法上类似于箭头函数。
+
+```ts
+function greeter(fn: (a: string) => void) {
+	fn("Hello, World");
+}
+function printToConsole(s: string) {
+	console.log(s);
+}
+greeter(printToConsole);
+```
+
+> 语法 (a: string) => void 意味着 "有一个参数的函数，名为 a ，类型为字符串，没有返回值"。就像 函数声明一样，如果没有指定参数类型，它就隐含为 any 类型。 当然，我们可以用一个类型别名来命名一个函数类型。
+
+```ts
+type GreetFunction = (a: string) => void;
+function greeter(fn: GreetFunction) {
+	// ...
+}
+```
 
