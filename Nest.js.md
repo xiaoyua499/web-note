@@ -1330,3 +1330,161 @@ bootstrap();
 ```
 
 ![](https://img-blog.csdnimg.cn/5c777aabd1144d6c94916b54450eaff9.png)
+
+## 下载图片
+
+### 1.download 直接下载
+
+```ts
+import { Controller, Post, UseInterceptors, UploadedFile, Get, Res } from '@nestjs/common';
+import { UploadService } from './upload.service';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express'
+import type { Response } from 'express'
+import {join} from 'path'
+@Controller('upload')
+export class UploadController {
+  constructor(private readonly uploadService: UploadService) { }
+  @Post('album')
+  @UseInterceptors(FileInterceptor('file'))
+  upload(@UploadedFile() file) {
+    console.log(file, 'file')
+    return '峰峰35岁憋不住了'
+  }
+  @Get('export')
+  downLoad(@Res() res: Response) {
+    const url = join(__dirname,'../images/1662894316133.png')
+    // res
+    // console.log(url)
+    res.download(url)
+    // return  true
+  }
+}
+```
+
+![](https://img-blog.csdnimg.cn/6cbc40ebf6a548d8add5ce70a6fb567c.png)
+
+### 2.使用文件流的方式下载
+
+> 可以使用compressing把他压缩成一个zip
+
+```ts
+import {zip} from 'compressing' 
+  
+
+
+@Get('stream')
+  async down (@Res() res:Response) {
+    const url = join(__dirname,'../images/1662894316133.png')
+    const tarStream  = new zip.Stream()
+    await tarStream.addEntry(url)
+    
+    res.setHeader('Content-Type', 'application/octet-stream');
+   
+    res.setHeader(
+      'Content-Disposition',  
+      `attachment; filename=xiaoman`,
+    );
+ 
+    tarStream.pipe(res)
+ 
+  }
+```
+
+前端接受流
+
+```ts
+const useFetch = async (url: string) => {
+  const res = await fetch(url).then(res => res.arrayBuffer())
+  console.log(res)
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(new Blob([res],{
+    // type:"image/png"
+  }))
+  a.download = 'xiaman.zip'
+  a.click()
+}
+ 
+const download = () => {
+  useFetch('http://localhost:3000/upload/stream')
+}
+```
+
+## RxJs
+
+> **为什么要介绍RxJs 应为 在 Nestjs 已经内置了 RxJs 无需安装 并且Nestjs 也会有一些基于Rxjs提供的API**
+
+![](https://img-blog.csdnimg.cn/0494e29cbd49435b9cb160f9bae1bb19.png)
+
+> Rxjs 中文文档[Observable | RxJS 中文文档](https://cn.rx.js.org/class/es6/Observable.js~Observable.html)
+
+### 概念
+
+RxJs 使用的是观察者模式，用来编写异步队列和事件处理。
+
+Observable 可观察的物件
+
+Subscription 监听Observable
+
+Operators 纯函数可以处理管道的数据 如 map filter concat reduce 等
+
+### 案例
+
+类似于迭代器 next 发出通知  complete通知完成
+
+subscribe 订阅 observable 发出的通知 也就是一个观察者
+
+```ts
+import { Observable } from "rxjs";
+ 
+//类似于迭代器 next 发出通知  complete通知完成
+const observable = new Observable(subscriber=>{
+    subscriber.next(1)
+    subscriber.next(2)
+    subscriber.next(3)
+ 
+    setTimeout(()=>{
+        subscriber.next(4)
+        subscriber.complete()
+    },1000)
+})
+ 
+observable.subscribe({
+    next:(value)=>{
+       console.log(value)
+    }
+})
+```
+
+### 案例2
+
+interval 五百毫秒执行一次 pipe 就是管道的意思 管道里面也是可以去掉接口的支持处理异步数据 去处理数据 这儿展示 了 map 和 filter 跟数组的方法是一样的 最后 通过观察者 subscribe 接受回调
+
+```ts
+import { Observable, interval, take } from "rxjs";
+import { map, filter,reduce,find,findIndex } from 'rxjs/operators'
+ 
+ 
+const subs = interval(500).pipe(map(v => ({ num: v })), filter(v => (v.num % 2 == 0))).subscribe((e) => {
+    console.log(e)
+    if (e.num == 10) {
+        subs.unsubscribe()
+    }
+})
+```
+
+![](https://img-blog.csdnimg.cn/f10b3ab637944c9eb60f2eeed2e6edd9.png)
+
+### 案例3 
+
+Rxjs 也可以处理事件 不过我们在[Nestjs](https://so.csdn.net/so/search?q=Nestjs&spm=1001.2101.3001.7020) 里面就不用操作DOM 了 你如果Angular 或则 Vue 框架看可以使用 fromEvent
+
+```ts
+import { Observable, interval, take,of,retry,fromEvent } from "rxjs";
+import { map, filter,reduce,find,findIndex } from 'rxjs/operators'
+ 
+const dom = fromEvent(document,'click').pipe(map(e=>e.target))
+dom.subscribe((e)=>{
+ 
+})
+```
+
