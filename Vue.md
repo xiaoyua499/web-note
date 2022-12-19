@@ -2448,6 +2448,179 @@ npm run dev
   ```
   
 
+# Vue中样式穿透
+
+## 前言
+
+> vue的style中设置scoped属性后，组件实现样式私有化。但是该组件又使用的其他组件库时(vant,elementui,自定义等)，该组件的style中的样式，优先级低，不生效，这个时候需要使用样式穿透(作用得更深)。
+
+## 一、scoped底层原理
+
+> scoped是通过在DOM以及css中加上`data-v-xxx`唯一标识来实现样式私有化。
+
+### 1.加上scoped前
+
+```vue
+<template>
+    <div class="demo">
+        样式穿透示例
+    </div>
+</template>
+<style >
+    .demo{
+        color: rgba(255,0,0,0.5);
+    }
+</style>
+```
+
+![](https://upload-images.jianshu.io/upload_images/19012724-cdcb7238a1a06ede.png?imageMogr2/auto-orient/strip|imageView2/2/w/362/format/webp)
+
+### 2.加上scoped后
+
+```vue
+<style scoped>
+    .demo{
+        color: rgba(255,0,0,0.5);
+    }
+</style>
+```
+
+![](https://upload-images.jianshu.io/upload_images/19012724-7de21dd4cfee774e.png?imageMogr2/auto-orient/strip|imageView2/2/w/448/format/webp)
+
+通过图片可以看到scoped底层是通过在`DOM节点`中添加`data-v-xxx`，`CSS`中通过添加`[data-v-xxx]`属性过滤，提高优先级，来实现样式的私有化。
+
+## 二、为什么需要样式穿透
+
+看一个场景实例：子组件根元素颜色为`红色`，非根元素为`蓝色`。
+父子两个组件`style`都使用`scoped`属性，在不修改子组件的前提下，在父组件上修改子组件的颜色为`绿色`。
+
+```vue
+// 子组件
+<template>
+    <div class="c1">
+        子组件根元素(red)
+        <div class="c2">
+            子组件非根元素(blue)
+        </div>
+    </div>
+</template>
+<style scoped>
+    .c1{
+        border: 1px dashed #000;
+        margin-top: 10px;
+        padding: 5px;
+        color: red;
+    }
+    .c1 .c2{
+        border: 1px dotted #000;
+        color:blue;
+    }
+</style>
+
+// 父组件
+<template>
+    <div class="demo">
+        父组件
+        <css-demo class="son"></css-demo>
+    </div>
+</template>
+<script lang="ts">
+import Vue from 'vue'
+import cssDemo from "./css-demo2.vue"
+export default Vue.extend({
+    components:{ cssDemo }
+})
+</script>
+<style scoped>
+    .demo{
+        width: 200px;
+        padding: 10px;
+        border: 1px solid rgba(0,0,0,1);
+
+        color: #000;
+    }
+    .son{
+        color: green;
+    }
+    .son .c2{
+        color: green !important;
+    }
+    .c1 .c2{
+        color: green !important;
+    }
+    .son.c1 .c2{
+        color: green !important;
+    }
+</style>
+```
+
+![](https://upload-images.jianshu.io/upload_images/19012724-8b5bc364e38a5c52.png?imageMogr2/auto-orient/strip|imageView2/2/w/234/format/webp)
+
+<img src="https://upload-images.jianshu.io/upload_images/19012724-cd486f95e1742ed7.png?imageMogr2/auto-orient/strip|imageView2/2/w/591/format/webp" style="zoom: 80%;" />
+
+可以看到只有子组件的根元素作用有生效，但是子组件的非根元素样式并没有生效，即使使用了`!important`。
+
+scoped在渲染的时候，如果组件内部还有子组件，只会在子组件的根元素加上`data-v-xxx`属性。
+
+当加上样式穿透后
+
+```vue
+// 父组件
+<style scoped>
+    >>> .c1 .c2{
+        color: green !important;
+    }
+</style>
+```
+
+<img src="https://upload-images.jianshu.io/upload_images/19012724-ec6bc54308d121cf.png?imageMogr2/auto-orient/strip|imageView2/2/w/590/format/webp" style="zoom:80%;" />
+
+![](https://upload-images.jianshu.io/upload_images/19012724-27a076ca0c980b9b.png?imageMogr2/auto-orient/strip|imageView2/2/w/233/format/webp)
+
+## 三、样式穿透的方法
+
+`vue`中针对不同的样式类型(`css`,`less`,`scss`)有不用的样式穿透方法。
+
+- `css` 使用 `>>>`
+- `less` 使用 `/deep/`
+- `scss` 使用 `::v-deep`
+
+### 1.css
+
+```vue
+<style scoped>
+    >>> .c1 .c2{
+        color: green !important;
+    }
+</style>
+```
+
+### 2.less
+
+```vue
+<style scoped lang="less">
+    /deep/ .c1 .c2{
+        color: green !important;
+    }
+</style>
+```
+
+### 3.scss
+
+```vue
+<style scoped lang=”scss“>
+    ::v-deep .c1 .c2{
+        color: green !important;
+    }
+</style>
+```
+
+
+
+
+
+
+
 # Pinia
 
 ## 介绍Pinia
