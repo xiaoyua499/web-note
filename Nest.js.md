@@ -1488,3 +1488,135 @@ dom.subscribe((e)=>{
 })
 ```
 
+## 拦截器
+
+### 响应拦截器
+
+拦截器具有一系列有用的功能，这些功能受面向切面编程（AOP）技术的启发。它们可以：
+
+- 在函数执行之前/之后绑定**额外的逻辑**
+- 转换从函数返回的结果
+- **转换**从函数抛出的异常
+- 扩展基本函数行为
+- 根据所选条件完全重写函数 (例如, 缓存目的)
+
+我们现在没有给我们的[Nestjs](https://so.csdn.net/so/search?q=Nestjs&spm=1001.2101.3001.7020) 规范返回给前端的格式现在比较乱
+
+![](https://img-blog.csdnimg.cn/99c5d7c52b0f49ae9d7055bc18050845.png)
+
+ 我们想给他返回一个标准的json 格式 就要给我们的数据做一个全局format
+
+```ts
+{
+  data, //数据
+  status:0,
+  message:"成功",
+  success:true
+}
+```
+
+新建common 文件夹 创建 response.ts
+
+Nest Js 配合 Rxjs 格式化数据
+
+```ts
+import { Injectable, NestInterceptor, CallHandler } from '@nestjs/common'
+import { map } from 'rxjs/operators'
+import {Observable} from 'rxjs'
+
+interface data<T>{
+    data:T
+}
+ 
+@Injectable()
+export class Response<T = any> implements NestInterceptor {
+    intercept(context, next: CallHandler):Observable<data<T>> {
+        return next.handle().pipe(map(data => {
+            return {
+               data,
+               status:0,
+               success:true,
+               message:"牛逼"
+            }
+        }))
+    }
+}
+```
+
+在main.ts 注册
+
+`app.useGlobalInterceptors(new Response())`
+
+![](https://img-blog.csdnimg.cn/1ff2a779632b4533afec8e947e43a7b7.png)
+
+### 全局异常拦截器
+
+common下面新建filter.ts
+
+让我们创建一个异常过滤器，它负责捕获作为`HttpException`类实例的异常，并为它们设置自定义响应逻辑。为此，我们需要访问底层平台 `Request`和 `Response`。我们将访问`Request`对象，以便提取原始 `url`并将其包含在日志信息中。我们将使用 `Response.json()`方法，使用 `Response`对象直接控制发送的响应。
+
+```ts 
+ import { ExceptionFilter, Catch, ArgumentsHost,HttpException } from '@nestjs/common'
+ 
+import {Request,Response} from 'express'
+ 
+@Catch(HttpException)
+export class HttpFilter implements ExceptionFilter {
+    catch(exception:HttpException, host: ArgumentsHost) {
+        const ctx = host.switchToHttp()
+        const request = ctx.getRequest<Request>()
+        const response = ctx.getResponse<Response>()
+ 
+        const status = exception.getStatus()
+ 
+        response.status(status).json({
+           data:exception.message,
+           time:new Date().getTime(),
+           success:false,
+           path:request.url,
+           status
+        })
+    }
+}
+```
+
+注册全局异常过滤器
+
+`app.useGlobalFilters(new HttpFilter())`
+
+![](https://img-blog.csdnimg.cn/093f7ce30d0f46af8d41bb7b59a58a0e.png)
+
+![](https://img-blog.csdnimg.cn/63040ff529bd413695828930c6e82b80.png)
+
+## 管道转换
+
+![](https://img-blog.csdnimg.cn/img_convert/266c9dbe43307e152e42c5ca2ba8ede1.png)
+
+### 管道
+
+> 1.转换，可以将前端传入的数据转成成我们需要的数据
+>
+> 2.验证 类似于前端的rules 配置验证规则
+
+我们先来讲一下转换 [Nestjs](https://so.csdn.net/so/search?q=Nestjs&spm=1001.2101.3001.7020) 提供了八个内置转换API
+
+- `ValidationPipe`
+- `ParseIntPipe`
+- `ParseFloatPipe`
+- `ParseBoolPipe`
+- `ParseArrayPipe`
+- `ParseUUIDPipe`
+- `ParseEnumPipe`
+- `DefaultValuePipe`
+
+### 案例1 
+
+接受的动态参数希望是一个number 类型 现在是string 
+
+![](https://img-blog.csdnimg.cn/4140f756d639462d89315d8c4e15dbe3.png)
+
+![](https://img-blog.csdnimg.cn/816ec2a26b944159ad79b3ea71f8553b.png)
+
+这时候就可以通过内置的管道 去做转换
+
+![](https://img-blog.csdnimg.cn/21d9cfb8ea104d989722aadf6c9721f3.png)
