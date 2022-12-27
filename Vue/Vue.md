@@ -1664,6 +1664,32 @@ module.exports = {
    2. 兼容性和hash模式相比略差。
    3. 应用部署上线时需要后端人员支持，解决刷新页面服务端404的问题。
 
+### 14.设置router-view默认页面
+
+配置`redirect:’目标页面完整路由’`选项
+
+```ts
+{
+  path: 'merchants', //商家路由
+  component: () => import('../views/login/merchants.vue'),
+  redirect: '/login/merchants/phone', //设置默认页面
+  children: [
+    {
+      path: 'phone',//手机登录
+      name:'phone',
+      component: () => import('../views/login/phone.vue'),
+    },
+    {
+      path: 'email',//邮箱登录
+      name:'email',
+      component: () => import('../views/login/email.vue')
+    }
+  ]
+},
+```
+
+
+
 
 
 
@@ -2581,8 +2607,8 @@ scoped在渲染的时候，如果组件内部还有子组件，只会在子组�
 
 `vue`中针对不同的样式类型(`css`,`less`,`scss`)有不用的样式穿透方法。
 
-- `css` 使用 `>>>`
-- `less` 使用 `/deep/`
+- `css` 使用 `>>>`**(Vue3中已弃用)**  `:deep(class名)`
+- `less` 使用 `/deep/`**(Vue3中已弃用)** `:deep(class名)`
 - `scss` 使用 `::v-deep`
 
 ### 1.css
@@ -2590,6 +2616,9 @@ scoped在渲染的时候，如果组件内部还有子组件，只会在子组�
 ```vue
 <style scoped>
     >>> .c1 .c2{
+        color: green !important;
+    }
+  :deep(.c1 .c2){
         color: green !important;
     }
 </style>
@@ -2600,6 +2629,9 @@ scoped在渲染的时候，如果组件内部还有子组件，只会在子组�
 ```vue
 <style scoped lang="less">
     /deep/ .c1 .c2{
+        color: green !important;
+    }
+  :deep(.c1 .c2){
         color: green !important;
     }
 </style>

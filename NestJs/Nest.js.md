@@ -814,8 +814,8 @@ body,
 proxy:{
   '/api':{
     target:'http://localhost:3000/',
-      changeOrigin:true,
-        rewrite: path => path.replace(/^\/api/, ''),
+    changeOrigin:true,
+    rewrite: path => path.replace(/^\/api/, ''),
   }
 }
 ```
@@ -1620,3 +1620,266 @@ export class HttpFilter implements ExceptionFilter {
 这时候就可以通过内置的管道 去做转换
 
 ![](https://img-blog.csdnimg.cn/21d9cfb8ea104d989722aadf6c9721f3.png)
+
+## 管道验证DTO
+
+### 1.先创建一个pipe 验证管道
+
+`nest g pi 文件名字`
+
+### 2.安装验证器
+
+`npm i --save class-validator class-transformer`
+
+```ts
+import {IsNotEmpty,IsString} from 'class-validator'
+export class CreatePDto {
+    @IsNotEmpty()//验证是否为空
+    @IsString() //是否为字符串
+    name:string;
+ 
+    @IsNotEmpty()
+    age:number
+}
+```
+
+![](https://img-blog.csdnimg.cn/db5188291c334678a63ab6f005f2b0e3.png)
+
+###  3.controller 使用管道 和定义类型
+
+![](https://img-blog.csdnimg.cn/a6f44266fc7d4ec496e551f289afbc47.png)
+
+### 4.实现验证transform
+
+value 就是 前端传过来的数据 metaData 就是元数据 通过 metatype 可以去实例化这个类
+
+![](https://img-blog.csdnimg.cn/c92a04bd2d8c424f856b2e01d173a6a0.png)
+
+实例化DTO
+
+![](https://img-blog.csdnimg.cn/e0a779cc334c4a008ccfb557f0c2e667.png)
+
+通过 validate 验证 DTO 返回一个promise 的错误信息 如果有错误抛出
+
+![](https://img-blog.csdnimg.cn/5b1d10b655054b1daee060c38ec5a7a2.png)
+
+### 5.注册全局DTO验证管道 
+
+跟自己写的效果基本类似
+
+![](https://img-blog.csdnimg.cn/3fcb663b2b3c4f86a1fc754c67deda57.png)
+
+![](https://img-blog.csdnimg.cn/9261c089d82143e3b5b2a9ea9890daff.png)
+
+## 守卫（guard）
+
+> 守卫有一个单独的责任。它们根据运行时出现的某些条件（例如权限，角色，[访问控制列表](https://so.csdn.net/so/search?q=访问控制列表&spm=1001.2101.3001.7020)等）来确定给定的请求是否由路由处理程序处理。这通常称为授权。在传统的 `Express` 应用程序中，通常由中间件处理授权(以及认证)。中间件是身份验证的良好选择，因为诸如 `token` 验证或添加属性到 `request` 对象上与特定路由(及其元数据)没有强关联。
+>
+> **tips 守卫在每个中间件之后执行，但在任何拦截器或管道之前执行。**
+
+### 创建一个守卫 
+
+`nest g gu [name]`
+
+守卫要求实现函数 给定参数context**执行上下文** 要求返回布尔值
+
+![](https://img-blog.csdnimg.cn/a49d71961d394ae585d4b49adccc9428.png)
+
+### Controller 使用守卫
+
+使用UseGuards 控制守卫
+
+![](https://img-blog.csdnimg.cn/1e9b509cef964854bc577bbdd7382aef.png)
+
+```ts
+import { Controller, Get, Post, Body, Patch, Param, Delete ,UseGuards} from '@nestjs/common'; 
+ 
+@Controller('guard')
+@UseGuards(RoleGuard)
+xxxxx
+```
+
+### 全局守卫
+
+`app.useGlobalGuards(new RoleGuard())`
+
+![](https://img-blog.csdnimg.cn/9c95a0eb42af4b2995e64ea85942c8f0.png)
+
+###  针对角色控制守卫
+
+SetMetadata 装饰器
+
+第一个参数为key，第二个参数自定义我们的例子是数组存放的权限
+
+![](https://img-blog.csdnimg.cn/566d426f4b7445beb1c12d1ec3dd4292.png)
+
+guard 使用 Reflector 反射读取 setMetaData的值 去做判断这边例子是从url 判断有没有admin权限
+
+```ts
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { Reflector } from '@nestjs/core'
+import type { Request } from 'express'
+@Injectable()
+export class RoleGuard implements CanActivate {
+  constructor(private Reflector: Reflector) { }
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const admin = this.Reflector.get<string[]>('role', context.getHandler())
+    const request = context.switchToHttp().getRequest<Request>()
+    if (admin.includes(request.query.role as string)) {
+      return true;
+    }else{
+      return false
+    }
+   
+  }
+}
+```
+
+成功的 
+
+![](https://img-blog.csdnimg.cn/c70c667130ab42a38c04de4739a92ce1.png)
+
+失败的
+
+![](https://img-blog.csdnimg.cn/bb6d9e8061e244ab966bdc7c4d248c71.png)
+
+## 自定义装饰器
+
+> 在[Nestjs](https://so.csdn.net/so/search?q=Nestjs&spm=1001.2101.3001.7020) 中我们使用了大量装饰器 decorator ，所以Nestjs 也允许我们去自定义装饰器。
+
+### 案例1 自定义权限装饰器
+
+生成装饰器 
+
+`nest g d [name]`
+
+```ts
+import { SetMetadata } from '@nestjs/common';
+ 
+export const Role = (role: string[]) => {
+    console.log(role,1)
+    return SetMetadata('role', role);
+}
+```
+
+![](https://img-blog.csdnimg.cn/52e259dee68a42e7ac3e70b4b24c81e7.png)
+
+###  案例2 自定义参数装饰器返回一个url
+
+```ts
+import { SetMetadata,createParamDecorator,ExecutionContext ,applyDecorators } from '@nestjs/common';
+import type {Request} from 'express'
+ 
+ 
+export const ReqUrl = createParamDecorator((data:string,ctx:ExecutionContext)=>{
+    const req = ctx.switchToHttp().getRequest<Request>()
+    return req.url
+})
+```
+
+![](https://img-blog.csdnimg.cn/4e8b67be7037456a80af3fd5617f37a7.png)
+
+## swagger接口文档
+
+> swagger 用于提供给前端接口文档
+
+安装命令如下
+
+`npm install  @nestjs/swagger swagger-ui-express`
+
+### 在main.ts 注册swagger
+
+```ts
+async function bootstrap() {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const options = new DocumentBuilder().setTitle('小满接口文档').setDescription('描述，。。。').setVersion('1').build()
+  const document = SwaggerModule.createDocument(app,options)
+  SwaggerModule.setup('/api-docs',app,document)
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+![](https://img-blog.csdnimg.cn/9a1be201b57242c6a44f1e3674c7e02f.png)
+
+ 打开对应的路径即可
+
+![](https://img-blog.csdnimg.cn/236cfafcd81a4312a87bc859ddadd85e.png)
+
+现在发现并没有分组很乱
+
+### 可以使用ApiTags 添加分组
+
+![](https://img-blog.csdnimg.cn/4ce8da2366364493878a9e79b665b898.png)
+
+![](https://img-blog.csdnimg.cn/7bb7434d04ff49459170b280556c7847.png)
+
+###  ApiOperation 接口描述
+
+```ts
+  @Get()
+  @Role('admin')
+  @ApiOperation({summary:"测试admin",description:"请求该接口需要amdin权限"})
+  findAll(@ReqUrl('123') url:string) {
+    console.log(url,'url')
+    return this.guardService.findAll();
+  }
+```
+
+![](https://img-blog.csdnimg.cn/4845cb968a7c453da9d705032199a596.png)
+
+### ApiParam 动态参数描述
+
+`@ApiParam({name:"id",description:"用户id",required:true})`
+
+![](https://img-blog.csdnimg.cn/5f95ccb6c9e741d7ae1af44dc02bd7e7.png)
+
+### ApiQuery 修饰get
+
+` @ApiQuery({name:"xxxx",description:"bbb"})`
+
+![](https://img-blog.csdnimg.cn/cf8a5e9a586e4eaa8641bb78b629729a.png)
+
+### ApiProperty 定义Post
+
+```ts
+import { ApiProperty } from "@nestjs/swagger"
+ 
+export class CreateGuardDto {
+    @ApiProperty({ description: "姓名", example: "小满" })
+    name: string
+    @ApiProperty({ description:"年龄"})
+    age: number
+}
+```
+
+![](https://img-blog.csdnimg.cn/c4ef21446c05482d97adba5948163a0c.png)
+
+###  ApiResponse 自定义返回信息
+
+`@ApiResponse({status:403,description:"自定义返回信息"})`
+
+![](https://img-blog.csdnimg.cn/7f6ee1894378478bbaf0c5013c4a25e5.png)
+
+### ApiBearerAuth **jwt token**
+
+ main.ts 增加 addBearerAuth()
+
+![](https://img-blog.csdnimg.cn/3fdef8f1147e473ba12541556c13dc3f.png)
+
+![](https://img-blog.csdnimg.cn/d888762b030344b480070d2a3235f2a9.png)
+
+ 添加token
+
+![](https://img-blog.csdnimg.cn/5642cc7a3667402fbac54fdbca539d1c.png)
+
+![](https://img-blog.csdnimg.cn/06048bfdd0414154b53c4f67ccb0312a.png)
+
+请求头携带了 
+
+### 其他装饰器 
+
+![](https://img-blog.csdnimg.cn/999e492e1d7a45d0b5b51069477a936f.png)
